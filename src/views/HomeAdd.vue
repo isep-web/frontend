@@ -175,7 +175,7 @@
 
       <el-card class="box-card">
         <el-form-item label="House Rules">
-          <el-checkbox-group v-model="ruleForm.amenities">
+          <el-checkbox-group v-model="ruleForm.constraints">
             <el-row :gutter="20">
               <el-col :xs="12" :sm="6" :md="6" :xl="6">
                 <el-checkbox
@@ -262,10 +262,12 @@
       </el-card>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
+        <el-button
+          type="primary"
+          @click="submitForm('ruleForm')"
+          style="margin-left: -100px"
           >Submit</el-button
         >
-        <el-button @click="resetForm('ruleForm')">Reset</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -283,6 +285,7 @@ export default {
         guest: 0,
         description: "",
         amenities: [],
+        constraints: [],
         fileList: [],
       },
       rules: {
@@ -323,8 +326,15 @@ export default {
   methods: {
     refreshHome() {
       HomeDataService.retrieveAllHome().then((response) => {
-        console.log(response.data.title);
+        console.log(response.data);
         this.ruleForm.title = response.data.title;
+
+        for (let i = 0; i < response.data.amenities.length; i++) {
+          this.img_click(response.data.amenities[i].name);
+        }
+        for (let i = 0; i < response.data.constraints.length; i++) {
+          this.img_click(response.data.constraints[i].name);
+        }
       });
     },
 
@@ -338,20 +348,24 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     img_click(id) {
       const checkImage = document.getElementById(id + "img");
-
-      let i = this.ruleForm.amenities.indexOf(id);
+      let ruleArray = null;
+      //区分 amenity 和 constraint
+      if (id[0] === "a") {
+        ruleArray = this.ruleForm.amenities;
+      } else {
+        ruleArray = this.ruleForm.constraints;
+      }
+      let i = ruleArray.indexOf(id);
       if (i > -1) {
         checkImage.className = "gray";
-        this.ruleForm.amenities.splice(i, 1);
+        ruleArray.splice(i, 1);
         return;
       }
       checkImage.className = " ";
-      this.ruleForm.amenities.push(id);
+      ruleArray.push(id);
+      console.log(ruleArray);
     },
     handleRemove(file) {
       console.log(file);
