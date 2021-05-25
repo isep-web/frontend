@@ -21,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Search",
     component: () => import("../views/Search.vue"),
   },
+  {
+    path: "/homeAdd",
+    name: "homeAdd",
+    component: () => import("../views/HomeAdd.vue"),
+  },
 ];
 
 const router = createRouter({
