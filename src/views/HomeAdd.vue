@@ -17,9 +17,9 @@
         <el-form-item label="Area(㎡)">
           <el-input v-model="ruleForm.area"></el-input>
         </el-form-item>
-        <el-form-item label="Guest" prop="guest">
+        <el-form-item label="Guest" prop="guestNumber">
           <el-input-number
-            v-model="ruleForm.guest"
+            v-model="ruleForm.guestNumber"
             :min="1"
             :max="10"
           ></el-input-number>
@@ -281,8 +281,8 @@ export default {
       ruleForm: {
         title: "",
         location: "",
-        area: "",
-        guest: 0,
+        area: 0,
+        guestNumber: 0,
         description: "",
         amenities: [],
         constraints: [],
@@ -325,23 +325,50 @@ export default {
   },
   methods: {
     refreshHome() {
-      HomeDataService.retrieveAllHome().then((response) => {
+      HomeDataService.retrieveAllHome(1).then((response) => {
         console.log(response.data);
         this.ruleForm.title = response.data.title;
-
-        for (let i = 0; i < response.data.amenities.length; i++) {
-          this.img_click(response.data.amenities[i].name);
+        // this.ruleForm.fileList = JSON.parse(response.data.picture);
+        console.log(this.ruleForm.fileList);
+      });
+      HomeDataService.retrieveAllAmenities(1).then((response) => {
+        console.log(response.data._embedded.amenities);
+        for (let i = 0; i < response.data._embedded.amenities.length; i++) {
+          this.img_click(response.data._embedded.amenities[i].name);
+          console.log(response.data._embedded.amenities[i].name);
         }
-        for (let i = 0; i < response.data.constraints.length; i++) {
-          this.img_click(response.data.constraints[i].name);
+      });
+      HomeDataService.retrieveAllConstraints(1).then((response) => {
+        console.log(response.data._embedded.constraints);
+        for (let i = 0; i < response.data._embedded.constraints.length; i++) {
+          this.img_click(response.data._embedded.constraints[i].name);
+          console.log(response.data._embedded.constraints[i].name);
+        }
+      });
+      HomeDataService.retrieveAllServices(1).then((response) => {
+        console.log(response.data._embedded.services);
+        for (let i = 0; i < response.data._embedded.services.length; i++) {
+          this.img_click(response.data._embedded.services[i].name);
+          console.log(response.data._embedded.services[i].name);
         }
       });
     },
 
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
+        const info = {};
+        Object.assign(info, this.ruleForm);
+        delete info.amenities;
+        delete info.constraints;
+        delete info.services;
+        info.location = JSON.stringify(this.ruleForm.location);
+        info.userId = 1;
+
+        console.log(info);
         if (valid) {
-          console.log(this.ruleForm);
+          HomeDataService.postHome(info).then((response) =>
+            console.log(response)
+          );
         } else {
           console.log("error submit!!");
           return false;
@@ -379,7 +406,10 @@ export default {
       console.log(this.ruleForm.fileList);
     },
     handleChange(file) {
-      this.ruleForm.fileList.push(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file.url);
+      // this.ruleForm.fileList.push(file.url);
+      console.log(file.url);
     },
     handleExceed(file) {
       this.$message.warning(`You can only post 6 photos of your home.`);
