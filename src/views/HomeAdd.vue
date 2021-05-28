@@ -17,9 +17,9 @@
         <el-form-item label="Area(㎡)">
           <el-input v-model="ruleForm.area"></el-input>
         </el-form-item>
-        <el-form-item label="Guest" prop="guest">
+        <el-form-item label="Guest" prop="guestNumber">
           <el-input-number
-            v-model="ruleForm.guest"
+            v-model="ruleForm.guestNumber"
             :min="1"
             :max="10"
           ></el-input-number>
@@ -175,7 +175,7 @@
 
       <el-card class="box-card">
         <el-form-item label="House Rules">
-          <el-checkbox-group v-model="ruleForm.amenities">
+          <el-checkbox-group v-model="ruleForm.constraints">
             <el-row :gutter="20">
               <el-col :xs="12" :sm="6" :md="6" :xl="6">
                 <el-checkbox
@@ -262,10 +262,12 @@
       </el-card>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
+        <el-button
+          type="primary"
+          @click="submitForm('ruleForm')"
+          style="margin-left: -100px"
           >Submit</el-button
         >
-        <el-button @click="resetForm('ruleForm')">Reset</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -279,10 +281,11 @@ export default {
       ruleForm: {
         title: "",
         location: "",
-        area: "",
-        guest: 0,
+        area: 0,
+        guestNumber: 0,
         description: "",
         amenities: [],
+        constraints: [],
         fileList: [],
       },
       rules: {
@@ -322,36 +325,74 @@ export default {
   },
   methods: {
     refreshHome() {
-      HomeDataService.retrieveAllHome().then((response) => {
-        console.log(response.data.title);
+      HomeDataService.retrieveAllHome(1).then((response) => {
+        console.log(response.data);
         this.ruleForm.title = response.data.title;
+        // this.ruleForm.fileList = JSON.parse(response.data.picture);
+        console.log(this.ruleForm.fileList);
+      });
+      HomeDataService.retrieveAllAmenities(1).then((response) => {
+        console.log(response.data._embedded.amenities);
+        for (let i = 0; i < response.data._embedded.amenities.length; i++) {
+          this.img_click(response.data._embedded.amenities[i].name);
+          console.log(response.data._embedded.amenities[i].name);
+        }
+      });
+      HomeDataService.retrieveAllConstraints(1).then((response) => {
+        console.log(response.data._embedded.constraints);
+        for (let i = 0; i < response.data._embedded.constraints.length; i++) {
+          this.img_click(response.data._embedded.constraints[i].name);
+          console.log(response.data._embedded.constraints[i].name);
+        }
+      });
+      HomeDataService.retrieveAllServices(1).then((response) => {
+        console.log(response.data._embedded.services);
+        for (let i = 0; i < response.data._embedded.services.length; i++) {
+          this.img_click(response.data._embedded.services[i].name);
+          console.log(response.data._embedded.services[i].name);
+        }
       });
     },
 
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
+        const info = {};
+        Object.assign(info, this.ruleForm);
+        delete info.amenities;
+        delete info.constraints;
+        delete info.services;
+        info.location = JSON.stringify(this.ruleForm.location);
+        info.userId = 1;
+
+        console.log(info);
         if (valid) {
-          console.log(this.ruleForm);
+          HomeDataService.postHome(info).then((response) =>
+            console.log(response)
+          );
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     img_click(id) {
       const checkImage = document.getElementById(id + "img");
-
-      let i = this.ruleForm.amenities.indexOf(id);
+      let ruleArray = null;
+      //区分 amenity 和 constraint
+      if (id[0] === "a") {
+        ruleArray = this.ruleForm.amenities;
+      } else {
+        ruleArray = this.ruleForm.constraints;
+      }
+      let i = ruleArray.indexOf(id);
       if (i > -1) {
         checkImage.className = "gray";
-        this.ruleForm.amenities.splice(i, 1);
+        ruleArray.splice(i, 1);
         return;
       }
       checkImage.className = " ";
-      this.ruleForm.amenities.push(id);
+      ruleArray.push(id);
+      console.log(ruleArray);
     },
     handleRemove(file) {
       console.log(file);
@@ -365,7 +406,10 @@ export default {
       console.log(this.ruleForm.fileList);
     },
     handleChange(file) {
-      this.ruleForm.fileList.push(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file.url);
+      // this.ruleForm.fileList.push(file.url);
+      console.log(file.url);
     },
     handleExceed(file) {
       this.$message.warning(`You can only post 6 photos of your home.`);

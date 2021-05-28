@@ -2,7 +2,7 @@ import axios from "axios";
 
 class SearchResultService {
   retrieveAllHouses() {
-    return axios.get("http://localhost:9090/houses");
+    return axios.get("http://localhost:17698/houses");
   }
 }
 
