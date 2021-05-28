@@ -6,6 +6,8 @@
       <router-link to="/about">About</router-link>
       |
       <router-link to="/search">Search</router-link>
+      |
+      <router-link to="/homeAdd">My home</router-link>
     </div>
     <router-view />
   </div>
