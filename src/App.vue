@@ -8,6 +8,8 @@
       <router-link to="/search">Search</router-link>
       |
       <router-link to="/homeAdd">My home</router-link>
+      |
+      <router-link to="/publishing">Publishing</router-link>
     </div>
     <router-view />
   </div>
