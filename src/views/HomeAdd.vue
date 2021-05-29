@@ -278,11 +278,12 @@ import HomeDataService from "../services/HomeDataService";
 export default {
   data() {
     return {
+      houseId: -1,
       ruleForm: {
         title: "",
         location: "",
         area: 0,
-        guestNumber: 0,
+        guestNumber: 1,
         description: "",
         amenities: [],
         constraints: [],
@@ -325,31 +326,37 @@ export default {
   },
   methods: {
     refreshHome() {
-      HomeDataService.retrieveAllHome(1).then((response) => {
+      if (this.houseId < 0) {
+        return;
+      }
+      HomeDataService.retrieveAllHome(this.houseId).then((response) => {
         console.log(response.data);
         this.ruleForm.title = response.data.title;
+        this.ruleForm.location = JSON.parse(response.data.location);
+        this.ruleForm.area = response.data.area;
+        this.ruleForm.guestNumber = response.data.guestNumber;
+        this.ruleForm.description = response.data.description;
         // this.ruleForm.fileList = JSON.parse(response.data.picture);
-        console.log(this.ruleForm.fileList);
       });
-      HomeDataService.retrieveAllAmenities(1).then((response) => {
-        console.log(response.data._embedded.amenities);
+      HomeDataService.retrieveAllAmenities(this.houseId).then((response) => {
+        // console.log(response.data._embedded.amenities);
         for (let i = 0; i < response.data._embedded.amenities.length; i++) {
-          this.img_click(response.data._embedded.amenities[i].name);
-          console.log(response.data._embedded.amenities[i].name);
+          this.img_click(response.data._embedded.amenities[i].detail);
+          console.log(response.data._embedded.amenities[i].detail);
         }
       });
-      HomeDataService.retrieveAllConstraints(1).then((response) => {
-        console.log(response.data._embedded.constraints);
+      HomeDataService.retrieveAllConstraints(this.houseId).then((response) => {
+        // console.log(response.data._embedded.constraints);
         for (let i = 0; i < response.data._embedded.constraints.length; i++) {
           this.img_click(response.data._embedded.constraints[i].name);
-          console.log(response.data._embedded.constraints[i].name);
+          // console.log(response.data._embedded.constraints[i].name);
         }
       });
-      HomeDataService.retrieveAllServices(1).then((response) => {
-        console.log(response.data._embedded.services);
+      HomeDataService.retrieveAllServices(this.houseId).then((response) => {
+        // console.log(response.data._embedded.services);
         for (let i = 0; i < response.data._embedded.services.length; i++) {
           this.img_click(response.data._embedded.services[i].name);
-          console.log(response.data._embedded.services[i].name);
+          // console.log(response.data._embedded.services[i].name);
         }
       });
     },
@@ -366,9 +373,30 @@ export default {
 
         console.log(info);
         if (valid) {
-          HomeDataService.postHome(info).then((response) =>
-            console.log(response)
-          );
+          if (this.houseId < 0) {
+            //post上传 house 的信息 （除amenities， constraints， services）
+            HomeDataService.postHome(info).then((response) => {
+              this.houseId = response.data._links.self.href.split("/").pop();
+              console.log("this houseId is " + this.houseId);
+              HomeDataService.putAmenities(
+                this.houseId,
+                this.ruleForm.amenities
+              );
+            });
+            // alert("添加成功");
+            this.$router.push({
+              name: "Publishing",
+              params: { houseName: this.ruleForm.title },
+            });
+          } else {
+            HomeDataService.putHouse(this.houseId, info);
+            HomeDataService.putAmenities(this.houseId, this.ruleForm.amenities);
+            // alert("修改成功");
+            this.$router.push({
+              name: "Publishing",
+              params: { houseName: this.ruleForm.title },
+            });
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -381,6 +409,8 @@ export default {
       //区分 amenity 和 constraint
       if (id[0] === "a") {
         ruleArray = this.ruleForm.amenities;
+      } else if (id[0] === "b") {
+        ruleArray = this.ruleForm.constraints;
       } else {
         ruleArray = this.ruleForm.constraints;
       }
@@ -411,7 +441,7 @@ export default {
       // this.ruleForm.fileList.push(file.url);
       console.log(file.url);
     },
-    handleExceed(file) {
+    handleExceed() {
       this.$message.warning(`You can only post 6 photos of your home.`);
     },
     handlePictureCardPreview(file) {
@@ -422,6 +452,12 @@ export default {
     },
   },
   created() {
+    // this.houseId = this.$router.query.houseId;
+    if (this.$route.params.houseId > 0) {
+      this.houseId = this.$route.params.houseId;
+    } else {
+      this.houseId = -1;
+    }
     this.refreshHome();
   },
 };
