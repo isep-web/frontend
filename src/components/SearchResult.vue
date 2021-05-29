@@ -1,5 +1,6 @@
 <template>
-  <p>Test view</p>
+  <p>test</p>
+  <!--  <p>Test view</p>
   <div class="col-md-6" v-for="house in houses" v-bind:key="house.title">
     <div class="thumbnail">
       <img src="{{house.picture}}" />
@@ -20,11 +21,11 @@
         </p>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <script>
-import SearchResultService from "@/services/SearchResultService";
+/*import SearchHouseService from "@/services/SearchHouseService";
 export default {
   name: "SearchResult",
   data() {
@@ -34,7 +35,7 @@ export default {
   },
   methods: {
     refreshSearchResult() {
-      SearchResultService.retrieveAllHouses().then((response) => {
+      SearchHouseService.retrieveAllHouses().then((response) => {
         console.log(response.data);
         this.houses = response.data._embedded.houses;
       });
@@ -43,7 +44,7 @@ export default {
   created() {
     this.refreshSearchResult();
   },
-};
+};*/
 </script>
 
 <style scoped></style>
