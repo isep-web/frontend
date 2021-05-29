@@ -61,7 +61,7 @@
 import { ElMessage } from "element-plus";
 import HomeDataService from "../services/HomeDataService";
 export default {
-  name: "publishing",
+  name: "Publishing",
   data() {
     return {
       id: Number,
@@ -106,6 +106,8 @@ export default {
             type: "success",
             center: true,
           });
+        } else {
+          ElMessage.error("filed to delete");
         }
         this.houses = null;
         this.numberOfHouses = 0;

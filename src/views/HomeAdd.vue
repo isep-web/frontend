@@ -382,15 +382,19 @@ export default {
                 this.houseId,
                 this.ruleForm.amenities
               );
-            });
-            // alert("添加成功");
-            this.$router.push({
-              name: "Publishing",
-              params: { houseName: this.ruleForm.title },
+              // alert("添加成功");
+              this.$router.push({
+                name: "Publishing",
+                params: { houseName: this.ruleForm.title },
+              });
             });
           } else {
             HomeDataService.putHouse(this.houseId, info);
             HomeDataService.putAmenities(this.houseId, this.ruleForm.amenities);
+            this.timer = setTimeout(() => {
+              //设置延迟执行
+              console.log("ok");
+            }, 1000);
             // alert("修改成功");
             this.$router.push({
               name: "Publishing",
