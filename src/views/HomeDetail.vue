@@ -114,7 +114,7 @@
             <p>{{ userData.description }}</p>
             <br />
             <div style="text-align: center">
-              <el-button type="primary">Contact Host</el-button>
+              <el-button type="primary" @click="open">Contact Host</el-button>
             </div>
           </div>
         </div>
@@ -228,6 +228,24 @@ export default {
         }
       });
       console.log("submit!");
+    },
+    open() {
+      this.$prompt("Input your message", "Contact host", {
+        confirmButtonText: "Send",
+        cancelButtonText: "Cancel",
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "Massage sent successfully!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "Cancel sending message!",
+          });
+        });
     },
     handleChange(value) {
       console.log(value);
