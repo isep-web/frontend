@@ -26,11 +26,20 @@
           </el-form-item>
           <el-form-item label="Amenities">
             <el-checkbox-group v-model="form.amenities">
-              <el-checkbox label="TV" name="tv"></el-checkbox>
-              <el-checkbox label="AC" name="ac"></el-checkbox>
-              <el-checkbox label="WIFI" name="wifi"></el-checkbox>
-              <el-checkbox label="Kitchen" name="kitchen"></el-checkbox>
-              <el-checkbox label="Washer" name="washer"></el-checkbox>
+              <el-checkbox label="TV" name="TV"></el-checkbox>
+              <el-checkbox label="WiFi" name="WiFi"></el-checkbox>
+              <el-checkbox label="A/C" name="A/C"></el-checkbox>
+              <el-checkbox label="Cook" name="Cook"></el-checkbox>
+              <el-checkbox label="Bathtub" name="Bathtub"></el-checkbox>
+              <el-checkbox
+                label="Heating system"
+                name="Heating system"
+              ></el-checkbox>
+              <el-checkbox
+                label="Swimming pool"
+                name="Swimming pool"
+              ></el-checkbox>
+              <el-checkbox label="Elevator" name="Elevator"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="Services">

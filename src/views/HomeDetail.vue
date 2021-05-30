@@ -105,13 +105,13 @@
           </div>
           <div class="panel-body">
             <img alt="140x140" src="" class="img-circle" width="50px" />
-            <h3>Host Name</h3>
+            <h3>{{ userData.displayName }}</h3>
             <br />
             <label>Languages spoken</label>
-            <p>English, French, Chinese</p>
+            <p>{{ userData.language }}</p>
             <br />
             <label>Intro</label>
-            <p>Hi there, My name is...</p>
+            <p>{{ userData.description }}</p>
             <br />
             <div style="text-align: center">
               <el-button type="primary">Contact Host</el-button>
@@ -144,6 +144,16 @@ export default {
         services: [],
         constraints: [],
       },
+      userData: {
+        displayName: "",
+        email: "",
+        phone: "",
+        gender: "",
+        language: "",
+        description: "",
+        icon: "",
+        location: "",
+      },
       form: {
         houseId: 0,
         guestNumber: 1,
@@ -164,12 +174,20 @@ export default {
         this.houseData.area = response.data.area;
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
-        //console.log(response.data.userId);
+        console.log(response.data.userId);
         this.getUserName(response.data.userId).then((response) => {
-          //console.log(response.data.userName);
-          this.houseData.userName = response.data.userName;
+          console.log(response.data);
+          this.userData.displayName = response.data.displayName;
+          this.userData.email = response.data.email;
+          this.userData.phone = response.data.phone;
+          this.userData.gender = response.data.gender;
+          this.userData.language = response.data.language;
+          this.userData.description = response.data.description;
+          this.userData.icon = response.data.icon;
+          this.userData.location = response.data.location;
         });
         console.log(this.houseData);
+        console.log(this.userData);
       });
       HouseDataService.retrieveAllAmenities(houseId).then((response) => {
         //console.log(response.data);
