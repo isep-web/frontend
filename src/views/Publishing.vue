@@ -18,7 +18,7 @@
           />
           <div style="padding: 14px">
             <span>{{ houses[index - 1].title }}</span>
-            <!--       @clike函数的数据不应是index，等可以拿到houseId时修改        -->
+            <!--       @click函数的数据不应是index，等可以拿到houseId时修改        -->
             <div class="bottom" style="padding: 10px">
               <el-button
                 type="warning"
