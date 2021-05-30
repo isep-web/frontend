@@ -21,39 +21,32 @@ class HomeDataService {
   retrieveAllServices(houseId) {
     return axios.get("http://localhost:17698/houses/" + houseId + "/services");
   }
+  retrieveAllApplications(houseId) {
+    return;
+  }
 
   postHome(form) {
     return axios.post("http://localhost:17698/houses/", form);
   }
-  putAmenities(houseId, array) {
-    if (array.length < 1) {
-      return;
-    }
-    let form = "{\n" + '  "_links": {';
-
-    for (let i = 0; i < array.length; i++) {
-      if (i !== 0) {
-        form = form + ",";
-      }
-      form =
-        form +
-        '"' +
-        array[i] +
-        '": { "href": "http://localhost:17698/houses/' +
-        houseId +
-        "/amenities/" +
-        array[i].slice(1) +
-        '" }\n';
-    }
-    form = form + "}}";
-    console.log(form);
+  putAmenities(houseId, data) {
     return axios.put(
       "http://localhost:17698/houses/" + houseId + "/amenities",
-      form
+      data
     );
-
-    // return axios.put("http://localhost:17698/houses/15/amenities", '{"_links": {"a1": { "href": "http://localhost:17698/houses/15/amenities/1" },"a2": { "href": "http://localhost:17698/houses/15/amenities/2" },"a8": { "href": "http://localhost:17698/houses/15/amenities/8" }}}');
   }
+  putConstraints(houseId, data) {
+    return axios.put(
+      "http://localhost:17698/houses/" + houseId + "/constraints",
+      data
+    );
+  }
+  putServices(houseId, data) {
+    return axios.put(
+      "http://localhost:17698/houses/" + houseId + "/services",
+      data
+    );
+  }
+
   putHouse(houseId, form) {
     return axios.put("http://localhost:17698/houses/" + houseId, form);
   }

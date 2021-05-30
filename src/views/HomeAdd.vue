@@ -179,13 +179,68 @@
             <el-row :gutter="20">
               <el-col :xs="12" :sm="6" :md="6" :xl="6">
                 <el-checkbox
-                  label="b1"
-                  name="amenities"
-                  id="b1"
+                  label="c1"
+                  id="c1"
                   style="display: none"
                 ></el-checkbox>
                 <img
                   src="../assets/amenities/smoke.png"
+                  alt="checked"
+                  id="c1img"
+                  class="gray"
+                  style="width: 80%"
+                  @click="img_click('c1')"
+                />
+              </el-col>
+              <el-col :xs="12" :sm="6" :md="6" :xl="6">
+                <el-checkbox
+                  label="c2"
+                  id="c2"
+                  style="display: none"
+                ></el-checkbox>
+                <img
+                  src="../assets/amenities/children.png"
+                  alt="checked"
+                  id="c2img"
+                  class="gray"
+                  style="width: 80%"
+                  @click="img_click('c2')"
+                />
+              </el-col>
+              <el-col :xs="12" :sm="6" :md="6" :xl="6">
+                <el-checkbox
+                  label="c3"
+                  name="amenities"
+                  id="c3"
+                  style="display: none"
+                ></el-checkbox>
+                <img
+                  src="../assets/amenities/pet.png"
+                  alt="checked"
+                  id="c3img"
+                  class="gray"
+                  style="width: 80%"
+                  @click="img_click('c3')"
+                />
+              </el-col>
+              <el-col :xs="12" :sm="6" :md="6" :xl="6"> </el-col>
+            </el-row>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-card>
+
+      <el-card class="box-card">
+        <el-form-item label="Need To Do">
+          <el-checkbox-group v-model="ruleForm.services">
+            <el-row :gutter="20">
+              <el-col :xs="12" :sm="6" :md="6" :xl="6">
+                <el-checkbox
+                  label="b1"
+                  id="b1"
+                  style="display: none"
+                ></el-checkbox>
+                <img
+                  src="../assets/amenities/cleaning.png"
                   alt="checked"
                   id="b1img"
                   class="gray"
@@ -196,12 +251,11 @@
               <el-col :xs="12" :sm="6" :md="6" :xl="6">
                 <el-checkbox
                   label="b2"
-                  name="amenities"
                   id="b2"
                   style="display: none"
                 ></el-checkbox>
                 <img
-                  src="../assets/amenities/pet.png"
+                  src="../assets/amenities/petsToFeed.png"
                   alt="checked"
                   id="b2img"
                   class="gray"
@@ -286,6 +340,7 @@ export default {
         guestNumber: 1,
         description: "",
         amenities: [],
+        services: [],
         constraints: [],
         fileList: [],
       },
@@ -342,20 +397,20 @@ export default {
         // console.log(response.data._embedded.amenities);
         for (let i = 0; i < response.data._embedded.amenities.length; i++) {
           this.img_click(response.data._embedded.amenities[i].detail);
-          console.log(response.data._embedded.amenities[i].detail);
+          // console.log(response.data._embedded.amenities[i].detail);
         }
       });
       HomeDataService.retrieveAllConstraints(this.houseId).then((response) => {
         // console.log(response.data._embedded.constraints);
         for (let i = 0; i < response.data._embedded.constraints.length; i++) {
-          this.img_click(response.data._embedded.constraints[i].name);
+          this.img_click(response.data._embedded.constraints[i].detail);
           // console.log(response.data._embedded.constraints[i].name);
         }
       });
       HomeDataService.retrieveAllServices(this.houseId).then((response) => {
         // console.log(response.data._embedded.services);
         for (let i = 0; i < response.data._embedded.services.length; i++) {
-          this.img_click(response.data._embedded.services[i].name);
+          this.img_click(response.data._embedded.services[i].detail);
           // console.log(response.data._embedded.services[i].name);
         }
       });
@@ -378,10 +433,20 @@ export default {
             HomeDataService.postHome(info).then((response) => {
               this.houseId = response.data._links.self.href.split("/").pop();
               console.log("this houseId is " + this.houseId);
+              //上传house之后拿到houseId 再put amenities的数据
               HomeDataService.putAmenities(
                 this.houseId,
-                this.ruleForm.amenities
+                this.rulesArrayToJson(this.ruleForm.amenities)
               );
+              HomeDataService.putConstraints(
+                this.houseId,
+                this.rulesArrayToJson(this.ruleForm.constraints)
+              );
+              HomeDataService.putServices(
+                this.houseId,
+                this.rulesArrayToJson(this.ruleForm.services)
+              );
+
               // alert("添加成功");
               this.$router.push({
                 name: "Publishing",
@@ -389,8 +454,21 @@ export default {
               });
             });
           } else {
-            HomeDataService.putHouse(this.houseId, info);
-            HomeDataService.putAmenities(this.houseId, this.ruleForm.amenities);
+            HomeDataService.putHouse(this.houseId, info).then((response) => {
+              HomeDataService.putAmenities(
+                this.houseId,
+                this.rulesArrayToJson(this.ruleForm.amenities)
+              );
+              HomeDataService.putConstraints(
+                this.houseId,
+                this.rulesArrayToJson(this.ruleForm.constraints)
+              );
+              HomeDataService.putServices(
+                this.houseId,
+                this.rulesArrayToJson(this.ruleForm.services)
+              );
+            });
+
             this.timer = setTimeout(() => {
               //设置延迟执行
               console.log("ok");
@@ -414,7 +492,7 @@ export default {
       if (id[0] === "a") {
         ruleArray = this.ruleForm.amenities;
       } else if (id[0] === "b") {
-        ruleArray = this.ruleForm.constraints;
+        ruleArray = this.ruleForm.services;
       } else {
         ruleArray = this.ruleForm.constraints;
       }
@@ -453,6 +531,26 @@ export default {
       this.dialogVisible = true;
       console.log("hello!", file.url);
       console.log(this.dialogImageUrl);
+    },
+    rulesArrayToJson(array) {
+      let form = "{\n" + '  "_links": {';
+
+      for (let i = 0; i < array.length; i++) {
+        if (i !== 0) {
+          form = form + ",";
+        }
+        form =
+          form +
+          '"' +
+          array[i] +
+          '": { "href": "http://localhost:17698/houses/' +
+          this.houseId +
+          "/amenities/" +
+          array[i].slice(1) +
+          '" }\n';
+      }
+      form = form + "}}";
+      return JSON.parse(form);
     },
   },
   created() {
