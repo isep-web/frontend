@@ -67,33 +67,35 @@
       <div class="col-md-7 column">
         <h3>Results</h3>
         <br />
-        <div
-          class="col-md-6"
-          v-for="house in filteredHouses"
-          v-bind:key="house.title"
-        >
+        <div class="col-md-6" v-for="house in results" :key="house.title">
+          <!--          <HouseCard-->
+          <!--            :title=house.title-->
+          <!--            :picture=house.picture-->
+          <!--            :amenities=house.amenities-->
+          <!--            :guest-number=house.guestNumber-->
+          <!--            :location=house.location-->
+          <!--          ></HouseCard>-->
           <div class="thumbnail">
             <img src="{{house.picture}}" alt="" />
             <div class="caption">
-              <h4>{{ house.title }}</h4>
-              <p style="color: #666666">
-                <span class="glyphicon glyphicon-map-marker"></span>
-                {{ house.location }}
-              </p>
-              <p style="color: #999999">
-                {{ house.guestNumber }} guests <br />
-              </p>
-              <span
-                v-for="amenity in house.amenities"
-                v-bind:key="amenity.name"
-              >
-                - {{ amenity }} </span
-              ><br /><br />
-              <p>
-                <a href="#" class="btn btn-primary" role="button">
-                  View details
-                </a>
-              </p>
+              <div>
+                <h4>{{ house.title }}</h4>
+                <p style="color: #666666">
+                  <span class="glyphicon glyphicon-map-marker"></span>
+                  {{ house.location }}
+                </p>
+                <p style="color: #999999">
+                  {{ house.guestNumber }} guests <br />
+                </p>
+                <span v-for="amenity in house.amenities" :key="amenity.name">
+                  - {{ amenity }} </span
+                ><br /><br />
+              </div>
+              <div style="text-align: center">
+                <el-button type="primary" @click="viewHouse(house.houseId)"
+                  >View details
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -105,15 +107,18 @@
 <script>
 //import SearchResult from "@/components/SearchResult";
 import SearchHouseService from "@/services/SearchHouseService";
+//import HouseCard from "@/components/HouseCard";
 
 export default {
   name: "Search",
   components: {
     // SearchResult,
+    // HouseCard,
   },
 
   data() {
     return {
+      id: Number,
       form: {
         location: "",
         guestNumber: 0,
@@ -123,16 +128,26 @@ export default {
         area: [60, 120],
       },
       houses: [{}],
+      results: [{}],
     };
   },
 
   methods: {
     onSubmit(form) {
+      this.results = [];
       this.$refs[form].validate((valid) => {
         if (valid) {
           console.log(this.form);
           console.log(this.form.guestNumber);
-          console.log(this.form.amenities.slice(0));
+          //console.log(this.form.amenities[0], this.form.amenities[1]);
+          //console.log(this.houses[0].amenities);
+          //console.log(this.houses[0].amenities.includes(this.form.amenities[0]));
+          //console.log(this.form.amenities.length);
+          for (let i = 0; i < this.houses.length; i++) {
+            if (this.houses[i].guestNumber >= this.form.guestNumber) {
+              this.results.push(this.houses[i]);
+            }
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -151,11 +166,18 @@ export default {
       let a = [];
       //this.houses.amenities = [];
       SearchHouseService.retrieveAllHouses().then((response) => {
-        console.log(response.data._embedded.houses);
+        //console.log(response.data._embedded.houses);
         this.houses = response.data._embedded.houses;
-        console.log(this.houses);
+        //console.log(this.houses);
 
         let length = response.data._embedded.houses.length;
+
+        for (let x = 0; x < length; x++) {
+          this.houses[x].houseId = this.getHouseId(
+            this.houses[x]._links.self.href
+          );
+        }
+
         for (let i = 0; i < length; i++) {
           //console.log(response.data._embedded.houses[i]._links.amenities.href);
           let ahref = response.data._embedded.houses[i]._links.amenities.href;
@@ -167,23 +189,30 @@ export default {
             this.houses[i].amenities = [];
             for (let k = 0; k < a.length; k++) {
               this.houses[i].amenities.push(a[k]);
-              console.log(a[k]);
+              //console.log(a[k]);
             }
             // this.houses[i].amenities = a;
 
-            console.log(this.houses[i].amenities);
+            //console.log(this.houses[i].amenities);
           });
-          console.log(this.houses[i].amenities);
+          //console.log(this.houses[i].amenities);
         }
-
         console.log(this.houses);
-        console.log(this.houses[0].amenities);
-        console.log(this.houses[0].guestNumber);
+        this.results = this.houses;
       });
     },
 
     handleChange(value) {
       console.log(value);
+    },
+
+    viewHouse(houseId) {
+      //console.log(houseId);
+      this.$router.push({ name: "homeDetail", params: { houseId: houseId } });
+    },
+
+    getHouseId(url) {
+      return parseInt(url.split("/").pop());
     },
   },
   created() {
@@ -192,10 +221,7 @@ export default {
   computed: {
     filteredHouses() {
       return this.houses.filter((house) => {
-        return house.guestNumber === this.form.guestNumber;
-        // return house.amenities.filter((amenity) => {
-        //   return amenity.name === this.form.amenities.slice(0);
-        // });
+        return house.guestNumber >= this.form.guestNumber;
       });
     },
   },
