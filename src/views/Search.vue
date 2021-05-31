@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="margin-top: 50px; text-align: left">
+  <div class="container" style="text-align: left">
     <div class="row clearfix">
       <div class="col-md-4 column">
         <h3>Search</h3>
@@ -217,7 +217,7 @@ export default {
 
     viewHouse(houseId) {
       //console.log(houseId);
-      this.$router.push({ name: "homeDetail", params: { houseId: houseId } });
+      this.$router.push({ path: "/homeDetail", query: { houseId: houseId } });
     },
 
     getHouseId(url) {

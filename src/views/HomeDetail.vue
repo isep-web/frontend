@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="margin-top: 50px; text-align: left">
+  <div class="container" style="text-align: left">
     <div class="block">
       <el-carousel trigger="click" height="500px">
         <el-carousel-item v-for="item in 4" :key="item">
@@ -255,7 +255,8 @@ export default {
     },
   },
   created() {
-    this.houseId = this.$route.params.houseId;
+    //console.log(this.$route.query.houseId);
+    this.houseId = this.$route.query.houseId;
     console.log("HouseId:" + this.houseId);
     this.refreshHouse(this.houseId);
   },
