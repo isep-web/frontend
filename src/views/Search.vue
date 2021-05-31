@@ -26,44 +26,43 @@
           </el-form-item>
           <el-form-item label="Amenities">
             <el-checkbox-group v-model="form.amenities">
-              <el-checkbox label="TV" name="TV"></el-checkbox>
-              <el-checkbox label="WiFi" name="WiFi"></el-checkbox>
-              <el-checkbox label="A/C" name="A/C"></el-checkbox>
-              <el-checkbox label="Cook" name="Cook"></el-checkbox>
-              <el-checkbox label="Bathtub" name="Bathtub"></el-checkbox>
-              <el-checkbox
-                label="Heating system"
-                name="Heating system"
-              ></el-checkbox>
-              <el-checkbox
-                label="Swimming pool"
-                name="Swimming pool"
-              ></el-checkbox>
-              <el-checkbox label="Elevator" name="Elevator"></el-checkbox>
+              <el-checkbox label="1" name="TV">TV</el-checkbox>
+              <el-checkbox label="2" name="WiFi">WiFi</el-checkbox>
+              <el-checkbox label="3" name="A/C">A/C</el-checkbox>
+              <el-checkbox label="4" name="Cook">Cook</el-checkbox>
+              <el-checkbox label="5" name="Bathtub">Bathtub</el-checkbox>
+              <el-checkbox label="6" name="Heating system"
+                >Heating system</el-checkbox
+              >
+              <el-checkbox label="7" name="Swimming">Swimming</el-checkbox>
+              <el-checkbox label="8" name="Elevator">Elevator</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="Services">
-            <p>*You must provide</p>
-            <el-checkbox-group v-model="form.services">
-              <el-checkbox label="Keep pets" name="pet"></el-checkbox>
-              <el-checkbox label="Watering plants" name="plant"></el-checkbox>
-              <el-checkbox label="Clean the house" name="clean"></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="Limitations">
-            <p>*You must respect</p>
-            <el-checkbox-group v-model="form.constraints">
-              <el-checkbox
-                label="No smoking in the accommodation"
-                name="no_smoking"
-              ></el-checkbox>
-              <el-checkbox
-                label="No noise after 23h"
-                name="no_noise"
-              ></el-checkbox>
-              <el-checkbox label="No children" name="no_children"></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
+
+          <!--          <el-form-item label="Services">-->
+          <!--            <p>*You must provide</p>-->
+          <!--            <el-checkbox-group v-model="form.services">-->
+          <!--              <el-checkbox label="Keep pets" name="pet"></el-checkbox>-->
+          <!--              <el-checkbox label="Watering plants" name="plant"></el-checkbox>-->
+          <!--              <el-checkbox label="Clean the house" name="clean"></el-checkbox>-->
+          <!--            </el-checkbox-group>-->
+          <!--          </el-form-item>-->
+
+          <!--          <el-form-item label="Limitations">-->
+          <!--            <p>*You must respect</p>-->
+          <!--            <el-checkbox-group v-model="form.constraints">-->
+          <!--              <el-checkbox-->
+          <!--                label="No smoking in the accommodation"-->
+          <!--                name="no_smoking"-->
+          <!--              ></el-checkbox>-->
+          <!--              <el-checkbox-->
+          <!--                label="No noise after 23h"-->
+          <!--                name="no_noise"-->
+          <!--              ></el-checkbox>-->
+          <!--              <el-checkbox label="No children" name="no_children"></el-checkbox>-->
+          <!--            </el-checkbox-group>-->
+          <!--          </el-form-item>-->
+
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')"
               >Search</el-button
@@ -132,9 +131,9 @@ export default {
         location: "",
         guestNumber: 0,
         amenities: [],
-        services: [],
-        constraints: [],
-        area: [60, 120],
+        // services: [],
+        // constraints: [],
+        area: [60, 200],
       },
       houses: [{}],
       results: [{}],
@@ -148,15 +147,23 @@ export default {
         if (valid) {
           console.log(this.form);
           console.log(this.form.guestNumber);
-          //console.log(this.form.amenities[0], this.form.amenities[1]);
-          //console.log(this.houses[0].amenities);
-          //console.log(this.houses[0].amenities.includes(this.form.amenities[0]));
-          //console.log(this.form.amenities.length);
-          for (let i = 0; i < this.houses.length; i++) {
+          console.log(this.form.amenities.toString());
+          console.log(this.form.area[0]);
+          console.log(this.form.area[1]);
+          /*          for (let i = 0; i < this.houses.length; i++) {
             if (this.houses[i].guestNumber >= this.form.guestNumber) {
               this.results.push(this.houses[i]);
             }
-          }
+          }*/
+          SearchHouseService.search(
+            this.form.amenities.toString(),
+            this.form.guestNumber.toString(),
+            this.form.area[0].toString(),
+            this.form.area[1].toString()
+          );
+          // .then((response) =>{
+          //   console.log(response.data);
+          // });
         } else {
           console.log("error submit!!");
           return false;

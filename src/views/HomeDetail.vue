@@ -161,6 +161,11 @@ export default {
         sourceUser: "",
         targetUser: "",
       },
+      msgForm: {
+        sourceUserId: 0,
+        targetUserId: 0,
+        content: "",
+      },
     };
   },
   methods: {
@@ -174,6 +179,7 @@ export default {
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
         this.form.house = response.data._links.self.href; // 给请求用
+        this.msgForm.targetUserId = response.data.userId; // 给发消息用
         console.log("UserId: " + response.data.userId);
         this.getUserName(response.data.userId).then((response) => {
           //console.log(response.data);
@@ -239,6 +245,13 @@ export default {
             message: "Massage sent successfully!",
           });
           console.log(value);
+          this.msgForm.content = value;
+          //测试用 sourceUserId
+          this.msgForm.sourceUserId = 2;
+          console.log(this.msgForm);
+          ApplyHouseService.postMessage(this.msgForm).then((response) => {
+            console.log(response.data);
+          });
         })
         .catch(() => {
           this.$message({

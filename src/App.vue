@@ -14,6 +14,8 @@
       <router-link to="/application">Application</router-link>
       |
       <router-link to="/reservation">Reservation</router-link>
+      |
+      <router-link to="/message">Message</router-link>
     </div>
     <router-view />
   </div>
