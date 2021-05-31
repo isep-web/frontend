@@ -134,7 +134,6 @@ export default {
       houseId: Number,
       houseData: {
         userId: 0,
-        userName: "",
         title: "",
         location: "",
         area: 0,
@@ -155,28 +154,29 @@ export default {
         location: "",
       },
       form: {
-        houseId: 0,
+        house: "",
         guestNumber: 1,
         startDate: "",
         endDate: "",
-        sourceUserId: 0,
-        targetUserId: 0,
+        sourceUser: "",
+        targetUser: "",
       },
     };
   },
   methods: {
     refreshHouse(houseId) {
       HouseDataService.retrieveAllHome(houseId).then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         this.houseData.userId = response.data.userId;
         this.houseData.title = response.data.title;
         this.houseData.location = response.data.location;
         this.houseData.area = response.data.area;
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
-        console.log(response.data.userId);
+        this.form.house = response.data._links.self.href; // 给请求用
+        console.log("UserId: " + response.data.userId);
         this.getUserName(response.data.userId).then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           this.userData.displayName = response.data.displayName;
           this.userData.email = response.data.email;
           this.userData.phone = response.data.phone;
@@ -185,9 +185,10 @@ export default {
           this.userData.description = response.data.description;
           this.userData.icon = response.data.icon;
           this.userData.location = response.data.location;
+          this.form.targetUser = response.data._links.self.href; //给请求用
+          console.log(this.userData);
         });
         console.log(this.houseData);
-        console.log(this.userData);
       });
       HouseDataService.retrieveAllAmenities(houseId).then((response) => {
         //console.log(response.data);
@@ -212,13 +213,11 @@ export default {
       });
     },
     onSubmit(form) {
-      //test sourceUserId
-      this.form.sourceUserId = 2;
-      this.form.houseId = this.houseId;
-      this.form.targetUserId = this.houseData.userId;
+      //测试用 sourceUser
+      this.form.sourceUser = "http://localhost:17698/users/2";
       this.$refs[form].validate((valid) => {
         if (valid) {
-          console.log(JSON.stringify(this.form));
+          console.log("ApplyData: " + JSON.stringify(this.form));
           ApplyHouseService.postApplication(this.form).then((response) => {
             console.log(response.data);
           });
@@ -239,6 +238,7 @@ export default {
             type: "success",
             message: "Massage sent successfully!",
           });
+          console.log(value);
         })
         .catch(() => {
           this.$message({
@@ -256,7 +256,7 @@ export default {
   },
   created() {
     this.houseId = this.$route.params.houseId;
-    console.log(this.houseId);
+    console.log("HouseId:" + this.houseId);
     this.refreshHouse(this.houseId);
   },
 };
