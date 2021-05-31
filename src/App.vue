@@ -10,6 +10,10 @@
       <router-link to="/homeAdd">My home</router-link>
       |
       <router-link to="/publishing">Publishing</router-link>
+      |
+      <router-link to="/application">Application</router-link>
+      |
+      <router-link to="/reservation">Reservation</router-link>
     </div>
     <router-view />
   </div>

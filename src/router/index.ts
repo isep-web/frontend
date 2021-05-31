@@ -36,6 +36,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "homeDetail",
     component: () => import("../views/HomeDetail.vue"),
   },
+  {
+    path: "/application",
+    name: "Application",
+    component: () => import("../views/Application.vue"),
+  },
+  {
+    path: "/reservation",
+    name: "Reservation",
+    component: () => import("../views/Reservation.vue"),
+  },
 ];
 
 const router = createRouter({

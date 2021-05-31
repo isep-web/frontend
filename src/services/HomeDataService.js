@@ -21,8 +21,20 @@ class HomeDataService {
   retrieveAllServices(houseId) {
     return axios.get("http://localhost:17698/houses/" + houseId + "/services");
   }
-  retrieveAllApplications(houseId) {
-    return;
+  //获取用户userId申请的applications
+  retrieveAllApps(userId) {
+    return axios.get(
+      "http://localhost:17698/users/" + userId + "/sentApplications"
+    );
+  }
+  retrieveAllReservations(userId) {
+    return axios.get(
+      "http://localhost:17698/users/" + userId + "/receivedApplications"
+    );
+  }
+
+  getByLink(link) {
+    return axios.get(link);
   }
 
   postHome(form) {
@@ -53,6 +65,13 @@ class HomeDataService {
 
   deleteHouse(houseId) {
     return axios.delete("http://localhost:17698/houses/" + houseId);
+  }
+  deleteApp(appId) {
+    return axios.delete("http://localhost:17698/applications/" + appId);
+  }
+
+  patchApp(appId, data) {
+    return axios.patch("http://localhost:17698/applications/" + appId, data);
   }
 }
 
