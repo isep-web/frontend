@@ -174,7 +174,25 @@ export default {
                   this.results[i].houseId = this.getHouseId(
                     this.results[i]._links.self.href
                   );
-                  //console.log(this.results[i].houseId);
+                  //小卡片上的amenities
+                  let ahref = this.results[i]._links.amenities.href;
+                  let a = [];
+                  SearchHouseService.retrieveAllHousesAmenities(ahref).then(
+                    (r) => {
+                      for (
+                        let j = 0;
+                        j < r.data._embedded.amenities.length;
+                        j++
+                      ) {
+                        a[j] = r.data._embedded.amenities[j].name;
+                      }
+                      this.results[i].amenities = [];
+                      for (let k = 0; k < a.length; k++) {
+                        this.results[i].amenities.push(a[k]);
+                        //console.log(a[k]);
+                      }
+                    }
+                  );
                 }
               );
             }
@@ -230,7 +248,7 @@ export default {
           //console.log(this.houses[i].amenities);
         }
         console.log(this.houses);
-        //this.results = this.houses;
+        this.results = this.houses;
       });
     },
 
