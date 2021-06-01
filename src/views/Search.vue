@@ -39,30 +39,6 @@
             </el-checkbox-group>
           </el-form-item>
 
-          <!--          <el-form-item label="Services">-->
-          <!--            <p>*You must provide</p>-->
-          <!--            <el-checkbox-group v-model="form.services">-->
-          <!--              <el-checkbox label="Keep pets" name="pet"></el-checkbox>-->
-          <!--              <el-checkbox label="Watering plants" name="plant"></el-checkbox>-->
-          <!--              <el-checkbox label="Clean the house" name="clean"></el-checkbox>-->
-          <!--            </el-checkbox-group>-->
-          <!--          </el-form-item>-->
-
-          <!--          <el-form-item label="Limitations">-->
-          <!--            <p>*You must respect</p>-->
-          <!--            <el-checkbox-group v-model="form.constraints">-->
-          <!--              <el-checkbox-->
-          <!--                label="No smoking in the accommodation"-->
-          <!--                name="no_smoking"-->
-          <!--              ></el-checkbox>-->
-          <!--              <el-checkbox-->
-          <!--                label="No noise after 23h"-->
-          <!--                name="no_noise"-->
-          <!--              ></el-checkbox>-->
-          <!--              <el-checkbox label="No children" name="no_children"></el-checkbox>-->
-          <!--            </el-checkbox-group>-->
-          <!--          </el-form-item>-->
-
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')"
               >Search</el-button
@@ -207,12 +183,6 @@ export default {
     },
 
     refreshSearchResult() {
-      /*      SearchHouseService.retrieveAllHouses().then((response) => {
-        console.log(response.data._embedded.houses);
-        this.houses = response.data._embedded.houses;
-        console.log(this.houses);
-      });
- */
       let a = [];
       //this.houses.amenities = [];
       SearchHouseService.retrieveAllHouses().then((response) => {
@@ -239,13 +209,8 @@ export default {
             this.houses[i].amenities = [];
             for (let k = 0; k < a.length; k++) {
               this.houses[i].amenities.push(a[k]);
-              //console.log(a[k]);
             }
-            // this.houses[i].amenities = a;
-
-            //console.log(this.houses[i].amenities);
           });
-          //console.log(this.houses[i].amenities);
         }
         console.log(this.houses);
         this.results = this.houses;

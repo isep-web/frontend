@@ -27,7 +27,54 @@
           </div>
           <div class="panel-body">
             <span v-for="amenity in houseData.amenities" :key="amenity">
-              - {{ amenity }}
+              <img
+                v-if="amenity === 'TV'"
+                src="../assets/amenities/TV.png"
+                alt="TV"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'WiFi'"
+                src="../assets/amenities/wifi.png"
+                alt="WiFi"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'A/C'"
+                src="../assets/amenities/AC.png"
+                alt="A/C"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'Cook'"
+                src="../assets/amenities/cook.png"
+                alt="Cook"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'Bathtub'"
+                src="../assets/amenities/bathtub.png"
+                alt="Bathtub"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'Heating system'"
+                src="../assets/amenities/heating.png"
+                alt="Heating"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'Swimming pool'"
+                src="../assets/amenities/swimming.png"
+                alt="Swimming"
+                style="width: 20%"
+              />
+              <img
+                v-if="amenity === 'Elevator'"
+                src="../assets/amenities/elevator.png"
+                alt="Elevator"
+                style="width: 20%"
+              />
             </span>
           </div>
         </div>
@@ -38,7 +85,24 @@
           <div class="panel-body">
             <p>*You must provide</p>
             <span v-for="service in houseData.services" :key="service">
-              - {{ service }} <br />
+              <img
+                v-if="service === 'Cleaning'"
+                src="../assets/amenities/cleaning.png"
+                alt="Cleaning"
+                style="width: 20%"
+              />
+              <img
+                v-if="service === 'Pets to feed'"
+                src="../assets/amenities/petsToFeed.png"
+                alt="PetsToFeed"
+                style="width: 20%"
+              />
+              <img
+                v-if="service === 'Plants to water'"
+                src="../assets/amenities/plant.png"
+                alt="PlantsToWater"
+                style="width: 20%"
+              />
             </span>
           </div>
         </div>
@@ -49,7 +113,24 @@
           <div class="panel-body">
             <p>*You must respect</p>
             <span v-for="constraint in houseData.constraints" :key="constraint">
-              - {{ constraint }} <br />
+              <img
+                v-if="constraint === 'Smokers welcome'"
+                src="../assets/amenities/smoke.png"
+                alt="SmokersWelcome"
+                style="width: 20%"
+              />
+              <img
+                v-if="constraint === 'Children welcome'"
+                src="../assets/amenities/children.png"
+                alt="ChildrenWelcome"
+                style="width: 20%"
+              />
+              <img
+                v-if="constraint === 'Pets welcome'"
+                src="../assets/amenities/pet.png"
+                alt="PetsWelcome"
+                style="width: 20%"
+              />
             </span>
           </div>
         </div>
