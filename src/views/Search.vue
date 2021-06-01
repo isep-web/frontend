@@ -5,8 +5,8 @@
         <h3>Search</h3>
         <br />
         <el-form ref="form" :model="form" label-width="100px">
-          <el-form-item label="Location">
-            <el-input v-model="form.location"></el-input>
+          <el-form-item label="Title">
+            <el-input v-model="form.title"></el-input>
           </el-form-item>
           <el-form-item label="Guest">
             <el-input-number
@@ -116,6 +116,7 @@
 //import SearchResult from "@/components/SearchResult";
 import SearchHouseService from "@/services/SearchHouseService";
 //import HouseCard from "@/components/HouseCard";
+import HouseDataService from "@/services/HomeDataService";
 
 export default {
   name: "Search",
@@ -128,6 +129,7 @@ export default {
     return {
       id: Number,
       form: {
+        title: "",
         location: "",
         guestNumber: 0,
         amenities: [],
@@ -150,6 +152,7 @@ export default {
           console.log(this.form.amenities.toString());
           console.log(this.form.area[0]);
           console.log(this.form.area[1]);
+          console.log(this.form.title);
           /*          for (let i = 0; i < this.houses.length; i++) {
             if (this.houses[i].guestNumber >= this.form.guestNumber) {
               this.results.push(this.houses[i]);
@@ -159,11 +162,24 @@ export default {
             this.form.amenities.toString(),
             this.form.guestNumber.toString(),
             this.form.area[0].toString(),
-            this.form.area[1].toString()
-          );
-          // .then((response) =>{
-          //   console.log(response.data);
-          // });
+            this.form.area[1].toString(),
+            this.form.title.toString()
+          ).then((response) => {
+            console.log(response.data);
+            console.log(response.data.length);
+            for (let i = 0; i < response.data.length; i++) {
+              HouseDataService.retrieveAllHome(response.data[i]).then(
+                (response) => {
+                  this.results[i] = response.data;
+                  this.results[i].houseId = this.getHouseId(
+                    this.results[i]._links.self.href
+                  );
+                  //console.log(this.results[i].houseId);
+                }
+              );
+            }
+            console.log(this.results);
+          });
         } else {
           console.log("error submit!!");
           return false;
@@ -214,7 +230,7 @@ export default {
           //console.log(this.houses[i].amenities);
         }
         console.log(this.houses);
-        this.results = this.houses;
+        //this.results = this.houses;
       });
     },
 

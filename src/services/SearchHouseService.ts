@@ -7,7 +7,7 @@ class SearchHouseService {
   retrieveAllHousesAmenities(amenityHref: any) {
     return axios.get(amenityHref);
   }
-  search(a: string, g: string, min: string, max: string) {
+  search(a: string, g: string, min: string, max: string, title: string) {
     console.log(
       "http://localhost:17698/houses/advancedSearch?amenities=" +
         a +
@@ -16,7 +16,9 @@ class SearchHouseService {
         "&areaMin=" +
         min +
         "&areaMax=" +
-        max
+        max +
+        "&title=" +
+        title
     );
     return axios.get(
       "http://localhost:17698/houses/advancedSearch?amenities=" +
@@ -26,7 +28,9 @@ class SearchHouseService {
         "&areaMin=" +
         min +
         "&areaMax=" +
-        max
+        max +
+        "&title=" +
+        title
     );
   }
 }
