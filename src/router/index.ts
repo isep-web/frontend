@@ -51,6 +51,32 @@ const routes: Array<RouteRecordRaw> = [
     name: "Message",
     component: () => import("../views/Message.vue"),
   },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("../views/Profile.vue"),
+  },
+  {
+    path: "/editprofile",
+    name: "Editprofile",
+    component: () => import("../views/Editprofile.vue"),
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/Login.vue"),
+    meta: {
+      showNav: true,
+    },
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/Register.vue"),
+    meta: {
+      showNav: true,
+    },
+  },
 ];
 
 const router = createRouter({

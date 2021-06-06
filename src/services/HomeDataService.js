@@ -73,6 +73,10 @@ class HomeDataService {
   patchApp(appId, data) {
     return axios.patch("http://localhost:17698/applications/" + appId, data);
   }
+
+  retrieveAllHouse() {
+    return axios.get("http://localhost:17698/houses");
+  }
 }
 
 export default new HomeDataService();
