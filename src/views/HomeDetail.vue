@@ -92,13 +92,13 @@
                 style="width: 20%"
               />
               <img
-                v-if="service === 'Pets to feed'"
+                v-if="service === 'Feed pet'"
                 src="../assets/amenities/petsToFeed.png"
                 alt="PetsToFeed"
                 style="width: 20%"
               />
               <img
-                v-if="service === 'Plants to water'"
+                v-if="service === 'Water plant'"
                 src="../assets/amenities/plant.png"
                 alt="PlantsToWater"
                 style="width: 20%"
@@ -114,19 +114,19 @@
             <p>*You must respect</p>
             <span v-for="constraint in houseData.constraints" :key="constraint">
               <img
-                v-if="constraint === 'Smokers welcome'"
+                v-if="constraint === 'Smoke'"
                 src="../assets/amenities/smoke.png"
                 alt="SmokersWelcome"
                 style="width: 20%"
               />
               <img
-                v-if="constraint === 'Children welcome'"
+                v-if="constraint === 'Children'"
                 src="../assets/amenities/children.png"
                 alt="ChildrenWelcome"
                 style="width: 20%"
               />
               <img
-                v-if="constraint === 'Pets welcome'"
+                v-if="constraint === 'Pet'"
                 src="../assets/amenities/pet.png"
                 alt="PetsWelcome"
                 style="width: 20%"

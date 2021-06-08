@@ -77,6 +77,16 @@ const routes: Array<RouteRecordRaw> = [
       showNav: true,
     },
   },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("../views/Admin.vue"),
+  },
+  {
+    path: "/adminHouse",
+    name: "AdminHouse",
+    component: () => import("../views/AdminHouse.vue"),
+  },
 ];
 
 const router = createRouter({
