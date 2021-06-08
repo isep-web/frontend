@@ -97,7 +97,6 @@
 
 <script>
 import AdminService from "@/services/AdminService";
-import HomeDataService from "@/services/HomeDataService";
 import { ElMessage } from "element-plus";
 export default {
   data() {
@@ -127,13 +126,6 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
       console.log(row.houses);
-      for (let i = 0; i < row.houses.length; i++) {
-        HomeDataService.deleteHouse(row.houses[i]).then((response) => {
-          if (response.status != 204) {
-            ElMessage.error("filed to delete");
-          }
-        });
-      }
       AdminService.deleteUser(row.id).then((response) => {
         if (response.status == 204) {
           ElMessage.success({
