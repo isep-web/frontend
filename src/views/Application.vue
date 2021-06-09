@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 70%; margin-left: 15%">
+  <div style="width: 70%; margin-left: 15%; margin-top: 30px">
     <el-row :gutter="40">
       <el-col
         :xs="24"
@@ -15,10 +15,10 @@
             :body-style="{ padding: '0px' }"
             style="background-color: #efefef"
           >
-            <img
-              src="../assets/homeexample.jpg"
-              style="width: 100%; opacity: 70%"
-            />
+            <div style="height: 150px">
+              <img :src="app.photo" style="height: 100%; opacity: 70%" />
+            </div>
+
             <div style="line-height: 8px">
               <p style="margin-top: 10px; font-weight: bolder">
                 {{ app.houseTitle }}
@@ -39,7 +39,10 @@
         </template>
         <template v-else-if="1">
           <el-card :body-style="{ padding: '0px' }">
-            <img src="../assets/homeexample.jpg" style="width: 100%" />
+            <div style="height: 150px">
+              <img :src="app.photo" style="width: 100%" />
+            </div>
+
             <div style="line-height: 8px">
               <p style="margin-top: 10px; font-weight: bolder">
                 {{ app.houseTitle }}
@@ -84,13 +87,26 @@ export default {
         console.log(response.data._embedded.applications);
         this.apps = response.data._embedded.applications;
         for (let i = 0; i < this.apps.length; i++) {
-          //添加每个申请对应的house的title到数据里
+          //添加每个申请对应的house的title和id到数据里
           HomeDataService.getByLink(this.apps[i]._links.house.href).then(
             (res) => {
               this.apps[i].houseTitle = res.data.title;
+              this.apps[i].houseId = res.data._links.self.href.split("/").pop();
+              //添加每个房间的图片
+              HomeDataService.retrievePicByHouseId(this.apps[i].houseId).then(
+                (res) => {
+                  if (res.data._embedded.pictures.length) {
+                    this.apps[i].photo =
+                      res.data._embedded.pictures[0]._links.self.href;
+                  } else {
+                    this.apps[i].photo = "";
+                  }
+                }
+              );
             }
           );
         }
+        console.log(this.apps);
       });
     },
     cancelApp(appId) {

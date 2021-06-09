@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 70%; margin-left: 15%">
+  <div style="width: 70%; margin-left: 15%; margin-top: 30px">
     <template v-for="res in this.reservations" :key="res">
       <el-card
         v-if="res.accepted === 0"
@@ -9,7 +9,7 @@
         <el-divider></el-divider>
         <el-row gutter="20">
           <el-col :span="8">
-            <img src="../assets/homeexample.jpg" style="width: 100%" />
+            <img :src="res.photo" style="width: 100%" />
           </el-col>
           <el-col :span="10">
             <p style="font-weight: bolder">House: {{ res.houseTitle }}</p>
@@ -49,10 +49,7 @@
         <el-divider></el-divider>
         <el-row gutter="20">
           <el-col :span="8">
-            <img
-              src="../assets/homeexample.jpg"
-              style="width: 100%; opacity: 50%"
-            />
+            <img :src="res.photo" style="width: 100%; opacity: 50%" />
           </el-col>
           <el-col :span="10">
             <p style="font-weight: bolder">House: {{ res.houseTitle }}</p>
@@ -89,14 +86,28 @@ export default {
   methods: {
     refreshApps() {
       HomeDataService.retrieveAllReservations(this.userId).then((response) => {
-        console.log(response.data._embedded.applications);
+        // console.log(response.data._embedded.applications);
         this.reservations = response.data._embedded.applications;
         for (let i = 0; i < this.reservations.length; i++) {
           //添加每个申请对应的house的title到数据里
           HomeDataService.getByLink(
             this.reservations[i]._links.house.href
           ).then((res) => {
+            this.reservations[i].houseId = res.data._links.self.href
+              .split("/")
+              .pop();
             this.reservations[i].houseTitle = res.data.title;
+            //请求房间图片
+            HomeDataService.retrievePicByHouseId(
+              this.reservations[i].houseId
+            ).then((res) => {
+              if (res.data._embedded.pictures.length) {
+                this.reservations[i].photo =
+                  res.data._embedded.pictures[0]._links.self.href;
+              } else {
+                this.reservations[i].photo = "";
+              }
+            });
           });
           //添加收到的每个申请的srcUser信息到数据里
           HomeDataService.getByLink(

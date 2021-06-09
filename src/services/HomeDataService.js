@@ -32,6 +32,9 @@ class HomeDataService {
       "http://localhost:17698/users/" + userId + "/receivedApplications"
     );
   }
+  retrievePicByHouseId(houseId) {
+    return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
+  }
 
   getByLink(link) {
     return axios.get(link);
@@ -63,11 +66,39 @@ class HomeDataService {
     return axios.put("http://localhost:17698/houses/" + houseId, form);
   }
 
+  putHousePhotos(houseId, files) {
+    // return axios.put("http://localhost:17698/houses" + houseId + "/photos", files);
+    return axios.post("http://localhost:17698/pictures", files);
+  }
+  putPictureContent(picId, file) {
+    let config = {
+      headers: { "Content-Type": "multipart/form-data" },
+    };
+    return axios
+      .post("http://localhost:17698/pictures/" + picId, file, config)
+      .then((res) => {
+        if (res.data) {
+          return Promise.resolve(res.data);
+        } else {
+          throw res;
+        }
+      })
+      .catch((err) => {
+        return Promise.reject(err);
+      });
+  }
+
   deleteHouse(houseId) {
     return axios.delete("http://localhost:17698/houses/" + houseId);
   }
   deleteApp(appId) {
     return axios.delete("http://localhost:17698/applications/" + appId);
+  }
+  deletePic(picId) {
+    axios.delete("http://localhost:17698/pictures/" + picId + "/content");
+    return axios.delete("http://localhost:17698/pictures/" + picId, {
+      headers: { Accept: "application/hal+json" },
+    });
   }
 
   patchApp(appId, data) {
@@ -76,6 +107,12 @@ class HomeDataService {
 
   retrieveAllHouse() {
     return axios.get("http://localhost:17698/houses");
+  }
+
+  getPic(id) {
+    return axios.get("http://localhost:17698/pictures/2", {
+      responseType: "arraybuffer",
+    });
   }
 }
 

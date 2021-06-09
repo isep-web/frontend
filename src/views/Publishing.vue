@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 70%; margin-left: 15%">
+  <div style="width: 70%; margin-left: 15%; margin-top: 30px">
     <el-row :gutter="40">
       <el-col
         :xs="24"
@@ -11,10 +11,10 @@
         style="margin-bottom: 40px"
       >
         <el-card :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
+          <div style="height: 150px">
+            <img :src="houses[index - 1].photo" style="height: 100%" />
+          </div>
+
           <div style="padding: 14px">
             <span>{{ houses[index - 1].title }}</span>
             <div class="bottom" style="padding: 10px">
@@ -71,21 +71,30 @@ export default {
     refreshHouses() {
       HomeDataService.retrieveAllHome(-1).then((response) => {
         this.houses = response.data._embedded.houses;
-        console.log(this.houses);
+        // console.log(this.houses);
         // this.numberOfHouses = houses.length;
         this.numberOfHouses = 0;
+        //在所有houses中筛选该用户的house
         for (let i = 0; i < this.houses.length; i++) {
-          // console.log(this.houses[i]);
           if (this.houses[i].userId === this.id) {
             this.numberOfHouses++;
             this.houses[i].houseId = this.getHouseId(
               this.houses[i]._links.self.href
             );
+            HomeDataService.retrievePicByHouseId(this.houses[i].houseId).then(
+              (res) => {
+                if (res.data._embedded.pictures.length) {
+                  this.houses[i].photo =
+                    res.data._embedded.pictures[0]._links.self.href;
+                } else {
+                  this.hosues[i].photo = "";
+                }
+              }
+            );
           } else {
             this.houses.splice(i, 1);
             i--;
           }
-          console.log(this.houses);
         }
       });
     },

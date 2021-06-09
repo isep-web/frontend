@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-top: 10px">
     <el-form
       :model="ruleForm"
       :rules="rules"
@@ -293,21 +293,40 @@
         </p>
         <el-form-item style="margin-left: -50px">
           <div style="margin-bottom: -20px">
-            <el-upload
-              action="#"
-              list-type="picture-card"
-              accept=".jpg, .jpeg, .png"
-              :auto-upload="false"
-              :on-change="handleChange"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
-              :limit="6"
-              :on-exceed="handleExceed"
-            >
-              <template #default>
-                <i class="el-icon-plus"></i>
-              </template>
-            </el-upload>
+            <img
+              class="housePic"
+              v-for="picId in this.ruleForm.fileHad"
+              :key="picId"
+              :src="'http://localhost:17698/pictures/' + picId"
+              @click="handleRemove(0, picId)"
+            />
+            <img
+              class="housePic"
+              v-for="num in 6 - this.ruleForm.fileHad.length"
+              :key="num"
+              :src="this.ruleForm.fileList[num - 1]"
+              @click="handleRemove(1, num - 1)"
+            />
+
+            <label for="file" style="height: 150px">
+              <i
+                class="el-icon-circle-plus-outline"
+                style="
+                  font-size: 40px;
+                  line-height: 200px;
+                  vertical-align: middle;
+                "
+              ></i>
+            </label>
+
+            <input
+              id="file"
+              name="file"
+              type="file"
+              accept="image/png,image/gif,image/jpeg"
+              @change="handleChange($event)"
+              style="display: none"
+            />
             <el-dialog v-model="dialogVisible">
               <img style="width: 100%" :src="dialogImageUrl" alt="" />
             </el-dialog>
@@ -343,6 +362,8 @@ export default {
         services: [],
         constraints: [],
         fileList: [],
+        fileList2: [],
+        fileHad: [],
       },
       rules: {
         title: [
@@ -377,13 +398,16 @@ export default {
       },
       dialogImageUrl: "",
       dialogVisible: false,
+      deletedPic: [],
     };
   },
   methods: {
     refreshHome() {
+      //如果是新添房间，不需要读数据，return
       if (this.houseId < 0) {
         return;
       }
+      //已存在房间，需要读取房间的数据
       HomeDataService.retrieveAllHome(this.houseId).then((response) => {
         console.log(response.data);
         this.ruleForm.title = response.data.title;
@@ -414,6 +438,16 @@ export default {
           // console.log(response.data._embedded.services[i].name);
         }
       });
+      HomeDataService.retrievePicByHouseId(this.houseId).then((response) => {
+        for (let i = 0; i < response.data._embedded.pictures.length; i++) {
+          this.ruleForm.fileHad.push(
+            response.data._embedded.pictures[i]._links.self.href
+              .split("/")
+              .pop()
+          );
+        }
+        console.log(this.ruleForm.fileHad);
+      });
     },
 
     submitForm(formName) {
@@ -428,11 +462,11 @@ export default {
 
         console.log(info);
         if (valid) {
+          //houseId < 0 表示是新建house
           if (this.houseId < 0) {
             //post上传 house 的信息 （除amenities， constraints， services）
             HomeDataService.postHome(info).then((response) => {
               this.houseId = response.data._links.self.href.split("/").pop();
-              console.log("this houseId is " + this.houseId);
               //上传house之后拿到houseId 再put amenities的数据
               HomeDataService.putAmenities(
                 this.houseId,
@@ -447,6 +481,27 @@ export default {
                 this.rulesArrayToJson(this.ruleForm.services)
               );
 
+              // 上传图片
+              const fileData = {};
+              fileData.house = "http://localhost:17698/houses/" + this.houseId;
+              // fileData.user = "http://localhost:17698/user/" + this.houseId;
+
+              fileData.type = 1;
+              // console.log(fileData);
+              for (let i = 0; i < this.ruleForm.fileList2.length; i++) {
+                HomeDataService.putHousePhotos(this.houseId, fileData).then(
+                  (response) => {
+                    const picId = response.data._links.self.href
+                      .split("/")
+                      .pop();
+                    HomeDataService.putPictureContent(
+                      picId,
+                      this.ruleForm.fileList2[i]
+                    );
+                  }
+                );
+              }
+
               // alert("添加成功");
               this.$router.push({
                 name: "Publishing",
@@ -454,6 +509,7 @@ export default {
               });
             });
           } else {
+            //else表示修改house
             HomeDataService.putHouse(this.houseId, info).then((response) => {
               HomeDataService.putAmenities(
                 this.houseId,
@@ -467,6 +523,29 @@ export default {
                 this.houseId,
                 this.rulesArrayToJson(this.ruleForm.services)
               );
+              for (let i = 0; i < this.deletedPic.length; i++) {
+                HomeDataService.deletePic(this.deletedPic[i]);
+              }
+              // 上传图片
+              const fileData = {};
+              fileData.house = "http://localhost:17698/houses/" + this.houseId;
+              // fileData.user = "http://localhost:17698/user/" + this.houseId;
+
+              fileData.type = 1;
+              // console.log(fileData);
+              for (let i = 0; i < this.ruleForm.fileList2.length; i++) {
+                HomeDataService.putHousePhotos(this.houseId, fileData).then(
+                  (response) => {
+                    const picId = response.data._links.self.href
+                      .split("/")
+                      .pop();
+                    HomeDataService.putPictureContent(
+                      picId,
+                      this.ruleForm.fileList2[i]
+                    );
+                  }
+                );
+              }
             });
 
             this.timer = setTimeout(() => {
@@ -506,32 +585,43 @@ export default {
       ruleArray.push(id);
       console.log(ruleArray);
     },
-    handleRemove(file) {
-      console.log(file);
-      let i = 0;
-      for (; i < this.ruleForm.fileList.length; i++) {
-        if (file.name === this.ruleForm.fileList[i].name) {
-          break;
-        }
+    handleRemove(type, index) {
+      //0是指已有的图片，1是新添加的图片
+      if (type === 1) {
+        console.log(this.ruleForm.fileList);
+        this.ruleForm.fileList.splice(index, 1);
       }
-      this.ruleForm.fileList.splice(i, 1);
+      if (type === 0) {
+        this.ruleForm.fileHad.splice(this.ruleForm.fileHad.indexOf(index), 1);
+        this.deletedPic.push(index);
+      }
+
+      // console.log(file);
+      // let i = 0;
+      // for (; i < this.ruleForm.fileList.length; i++) {
+      //   if (file.name === this.ruleForm.fileList[i].name) {
+      //     break;
+      //   }
+      // }
+      // this.ruleForm.fileList.splice(i, 1);
+      // console.log(this.ruleForm.fileList);
+    },
+    handleChange(e) {
+      if (this.ruleForm.fileHad.length + this.ruleForm.fileList.length > 5) {
+        this.$message.warning(`You can only post 6 photos of your home.`);
+        return;
+      }
+      const file = e.target.files[0] || e.dataTransfer.files[0];
+      let URL = window.URL || window.webkitURL; // 获取当前域名地址
+      this.ruleForm.fileList.push(URL.createObjectURL(file));
+
+      let param = new FormData(); //创建form对象
+      param.append("file", file, file.name); //通过append向form对象添加数据
+
+      this.ruleForm.fileList2.push(param);
       console.log(this.ruleForm.fileList);
     },
-    handleChange(file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file.url);
-      // this.ruleForm.fileList.push(file.url);
-      console.log(file.url);
-    },
-    handleExceed() {
-      this.$message.warning(`You can only post 6 photos of your home.`);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-      console.log("hello!", file.url);
-      console.log(this.dialogImageUrl);
-    },
+
     rulesArrayToJson(array) {
       let form = "{\n" + '  "_links": {';
 
@@ -570,7 +660,7 @@ export default {
   width: 60%;
   margin-left: 20%;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: left;
   padding-top: 20px;
 }
@@ -585,5 +675,14 @@ export default {
 img {
   -webkit-user-drag: none;
   /* 所有图片不能被拖动 */
+}
+.housePic {
+  width: 150px;
+  padding: 10px;
+  line-height: 200px;
+  vertical-align: middle;
+}
+.housePic:hover {
+  opacity: 50%;
 }
 </style>
