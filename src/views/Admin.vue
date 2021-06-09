@@ -18,6 +18,14 @@
           <el-table-column type="expand">
             <template #default="props">
               <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Avatar:">
+                  <img
+                    :src="props.row.avatar"
+                    class="img-circle"
+                    style="width: 25%"
+                  />
+                </el-form-item>
+                <br />
                 <el-form-item label="User Id:">
                   {{ props.row.id }}
                 </el-form-item>
@@ -98,6 +106,7 @@
 <script>
 import AdminService from "@/services/AdminService";
 import { ElMessage } from "element-plus";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -112,6 +121,7 @@ export default {
           description: "description",
           location: "France, Paris, 75014",
           houses: [],
+          avatar: "",
         },
       ],
       search: "",
@@ -125,7 +135,6 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
-      console.log(row.houses);
       AdminService.deleteUser(row.id).then((response) => {
         if (response.status == 204) {
           ElMessage.success({
@@ -153,20 +162,11 @@ export default {
           this.tableData[i].id = this.getUserId(
             this.tableData[i]._links.self.href
           );
-          let a = [];
-          AdminService.getAllHousesOfOneUser(this.tableData[i].id).then(
-            (response) => {
-              for (let j = 0; j < response.data._embedded.houses.length; j++) {
-                a.push(
-                  this.getHouseId(
-                    response.data._embedded.houses[j]._links.self.href
-                  )
-                );
-              }
-              //console.log(a);
-            }
-          );
-          this.tableData[i].houses = a;
+          //读用户头像
+          this.getAvatar(this.tableData[i]._links.avatar.href).then((r) => {
+            this.tableData[i].avatar = r.data._links.content.href;
+            console.log(this.tableData[i].avatar);
+          });
         }
       });
     },
@@ -175,6 +175,9 @@ export default {
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
+    },
+    getAvatar(href) {
+      return axios.get(href);
     },
   },
   created() {

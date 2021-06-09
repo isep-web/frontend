@@ -48,6 +48,12 @@
                 <el-form-item label="Description:">
                   {{ props.row.description }}
                 </el-form-item>
+                <br />
+                <el-form-item label="Pictures:">
+                  <span v-for="pic in props.row.pictures" :key="pic">
+                    <img :src="pic" style="width: 25%" />
+                  </span>
+                </el-form-item>
               </el-form>
             </template>
           </el-table-column>
@@ -103,6 +109,7 @@ import AdminService from "@/services/AdminService";
 import HouseDataService from "@/services/HomeDataService";
 import HomeDataService from "@/services/HomeDataService";
 import { ElMessage } from "element-plus";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -118,6 +125,7 @@ export default {
           amenities: [],
           constraints: [],
           services: [],
+          pictures: [],
         },
       ],
       search: "",
@@ -158,6 +166,7 @@ export default {
           let a = [];
           let c = [];
           let s = [];
+          let p = [];
           this.tableData[i].houseId = this.getHouseId(
             this.tableData[i]._links.self.href
           );
@@ -182,16 +191,26 @@ export default {
               s.push(r.data._embedded.services[n].name);
             }
           });
+          //读取房间图片
+          this.getHousePic(houseIdTemp).then((r) => {
+            for (let m = 0; m < r.data._embedded.pictures.length; m++) {
+              p.push(r.data._embedded.pictures[m]._links.content.href);
+            }
+          });
 
           this.tableData[i].amenities = a;
           this.tableData[i].constraints = c;
           this.tableData[i].services = s;
+          this.tableData[i].pictures = p;
           //console.log(this.tableData[i].amenities);
         }
       });
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
+    },
+    getHousePic(houseId) {
+      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
     },
   },
   created() {

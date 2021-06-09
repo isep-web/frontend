@@ -2,13 +2,11 @@
   <div class="container" style="text-align: left">
     <div class="block">
       <el-carousel trigger="click" height="500px">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <h3 class="small">{{ item }}</h3>
+        <el-carousel-item v-for="pic in houseData.pictures" :key="pic">
+          <img :src="pic" style="width: 100%" />
         </el-carousel-item>
       </el-carousel>
     </div>
-
-    <br />
 
     <div class="row clearfix">
       <div class="col-md-7 column">
@@ -185,7 +183,11 @@
             <h3 class="panel-title">Host Description</h3>
           </div>
           <div class="panel-body">
-            <img alt="140x140" src="" class="img-circle" width="50px" />
+            <img
+              :src="userData.avatar"
+              class="img-circle"
+              style="width: 100px; height: 100px"
+            />
             <h3>{{ userData.displayName }}</h3>
             <br />
             <label>Languages spoken</label>
@@ -223,6 +225,7 @@ export default {
         amenities: [],
         services: [],
         constraints: [],
+        pictures: [],
       },
       userData: {
         displayName: "",
@@ -231,7 +234,8 @@ export default {
         gender: "",
         language: "",
         description: "",
-        icon: "",
+        //icon: "",
+        avatar: "",
         location: "",
       },
       form: {
@@ -270,7 +274,12 @@ export default {
           this.userData.gender = response.data.gender;
           this.userData.language = response.data.language;
           this.userData.description = response.data.description;
-          this.userData.icon = response.data.icon;
+          //this.userData.icon = response.data.icon;
+          //用户头像
+          this.getAvatar(response.data._links.avatar.href).then((r) => {
+            this.userData.avatar = r.data._links.content.href;
+            console.log(this.userData.avatar);
+          });
           this.userData.location = response.data.location;
           this.form.targetUser = response.data._links.self.href; //给请求用
           console.log(this.userData);
@@ -296,6 +305,13 @@ export default {
         for (let i = 0; i < response.data._embedded.constraints.length; i++) {
           this.houseData.constraints[i] =
             response.data._embedded.constraints[i].name;
+        }
+      });
+      //读取房间图片
+      this.getHousePic(houseId).then((response) => {
+        for (let i = 0; i < response.data._embedded.pictures.length; i++) {
+          this.houseData.pictures[i] =
+            response.data._embedded.pictures[i]._links.content.href;
         }
       });
     },
@@ -347,6 +363,12 @@ export default {
     getUserName(userId) {
       return axios.get("http://localhost:17698/users/" + userId);
     },
+    getAvatar(href) {
+      return axios.get(href);
+    },
+    getHousePic(houseId) {
+      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
+    },
   },
   created() {
     //console.log(this.$route.query.houseId);
@@ -359,17 +381,4 @@ export default {
 
 <style scoped>
 @import url(https://unpkg.com/bootstrap@3.3.5/dist/css/bootstrap.min.css);
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 150px;
-  margin: 0;
-}
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
-}
 </style>

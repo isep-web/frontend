@@ -53,7 +53,7 @@
         <br />
         <div class="col-md-6" v-for="house in results" :key="house.title">
           <div class="thumbnail">
-            <img src="{{ house.picture }}" alt="" />
+            <img :src="house.cover" />
             <div class="caption">
               <div>
                 <h4>{{ house.title }}</h4>
@@ -84,6 +84,7 @@
 <script>
 import SearchHouseService from "@/services/SearchHouseService";
 import HouseDataService from "@/services/HomeDataService";
+import axios from "axios";
 export default {
   name: "Search",
   data() {
@@ -142,7 +143,6 @@ export default {
                       this.results[i].amenities = [];
                       for (let k = 0; k < a.length; k++) {
                         this.results[i].amenities.push(a[k]);
-                        //console.log(a[k]);
                       }
                     }
                   );
@@ -172,6 +172,16 @@ export default {
           this.houses[x].houseId = this.getHouseId(
             this.houses[x]._links.self.href
           );
+          this.getHousePic(this.houses[x].houseId).then((r) => {
+            //console.log(r.data);
+            this.houses[x].pictures = r.data._embedded.pictures;
+            if (this.houses[x].pictures.length != 0) {
+              this.houses[x].cover =
+                this.houses[x].pictures[0]._links.content.href;
+            } else {
+              this.houses[x].cover = "";
+            }
+          });
         }
 
         for (let i = 0; i < length; i++) {
@@ -200,6 +210,9 @@ export default {
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
+    },
+    getHousePic(houseId) {
+      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
     },
   },
   created() {
