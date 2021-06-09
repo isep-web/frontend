@@ -52,15 +52,8 @@
         <h3>Results</h3>
         <br />
         <div class="col-md-6" v-for="house in results" :key="house.title">
-          <!--          <HouseCard-->
-          <!--            :title=house.title-->
-          <!--            :picture=house.picture-->
-          <!--            :amenities=house.amenities-->
-          <!--            :guest-number=house.guestNumber-->
-          <!--            :location=house.location-->
-          <!--          ></HouseCard>-->
           <div class="thumbnail">
-            <img src="{{house.picture}}" alt="" />
+            <img src="{{ house.picture }}" alt="" />
             <div class="caption">
               <div>
                 <h4>{{ house.title }}</h4>
@@ -77,8 +70,8 @@
               </div>
               <div style="text-align: center">
                 <el-button type="primary" @click="viewHouse(house.houseId)"
-                  >View details
-                </el-button>
+                  >View details</el-button
+                >
               </div>
             </div>
           </div>
@@ -89,18 +82,10 @@
 </template>
 
 <script>
-//import SearchResult from "@/components/SearchResult";
 import SearchHouseService from "@/services/SearchHouseService";
-//import HouseCard from "@/components/HouseCard";
 import HouseDataService from "@/services/HomeDataService";
-
 export default {
   name: "Search",
-  components: {
-    // SearchResult,
-    // HouseCard,
-  },
-
   data() {
     return {
       id: Number,
@@ -109,15 +94,12 @@ export default {
         location: "",
         guestNumber: 0,
         amenities: [],
-        // services: [],
-        // constraints: [],
         area: [60, 200],
       },
       houses: [{}],
       results: [{}],
     };
   },
-
   methods: {
     onSubmit(form) {
       this.results = [];
@@ -129,11 +111,6 @@ export default {
           console.log(this.form.area[0]);
           console.log(this.form.area[1]);
           console.log(this.form.title);
-          /*          for (let i = 0; i < this.houses.length; i++) {
-            if (this.houses[i].guestNumber >= this.form.guestNumber) {
-              this.results.push(this.houses[i]);
-            }
-          }*/
           SearchHouseService.search(
             this.form.amenities.toString(),
             this.form.guestNumber.toString(),
@@ -181,7 +158,6 @@ export default {
       });
       console.log("submit!");
     },
-
     refreshSearchResult() {
       let a = [];
       //this.houses.amenities = [];
@@ -216,16 +192,12 @@ export default {
         this.results = this.houses;
       });
     },
-
     handleChange(value) {
       console.log(value);
     },
-
     viewHouse(houseId) {
-      //console.log(houseId);
       this.$router.push({ path: "/homeDetail", query: { houseId: houseId } });
     },
-
     getHouseId(url) {
       return parseInt(url.split("/").pop());
     },
