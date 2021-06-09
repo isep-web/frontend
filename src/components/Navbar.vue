@@ -10,34 +10,34 @@
       active-text-color="#ffd04b"
     >
       <!--<el-menu-item index="1"></el-menu-item>-->
-      <el-menu-item index="2" style="margin-left: 150px">
-        <router-link to="/search"> Search </router-link>
+      <el-menu-item
+        index="2"
+        style="margin-left: 150px"
+        @click="clickItem('search')"
+      >
+        <router-link to="/search"> My publishing </router-link>
       </el-menu-item>
-      <el-menu-item index="3">
-        <router-link to="/application"> My application </router-link>
+      <el-menu-item index="3" @click="clickItem('application')">
+        <router-link to="/application"> My publishing </router-link>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="4" @click="clickItem('publishing')">
         <router-link to="/publishing"> My publishing </router-link>
       </el-menu-item>
       <!--  <el-menu-item index="4" disabled>MY publishing</el-menu-item>-->
-      <el-menu-item index="5">
+      <el-menu-item index="5" @click="clickItem('reservation')">
         <router-link to="/reservation"> New reservation </router-link>
       </el-menu-item>
-      <el-menu-item index="6">
+      <el-menu-item
+        index="6"
+        style="margin-left: 200px"
+        @click="clickItem('message')"
+      >
         <img
           src="../assets/xiaoxi.png"
-          style="
-            width: 40px;
-            height: 40px;
-            margin-left: 250px;
-            margin-right: 10px;
-          "
+          style="width: 40px; height: 40px; margin-right: 10px"
         />
         <router-link to="/message"> Messages </router-link>
       </el-menu-item>
-      <!--  <el-menu-item index="7">-->
-      <!--    <el-avatar :size="medium" :src="circleUrl"></el-avatar>-->
-      <!--  </el-menu-item>-->
 
       <el-submenu index="8">
         <template #title>
@@ -45,18 +45,13 @@
           </el-avatar>
           My account
         </template>
-        <!--        <el-menu-item index="8-1" v-if="!verifyLogin()">-->
-        <!--          <router-link to="/register">-->
-        <!--          Register-->
-        <!--          </router-link>-->
-        <!--        </el-menu-item>-->
-        <!--        <el-menu-item index="8-2" v-if="!verifyLogin()">-->
-        <!--          <router-link to="/login">-->
-        <!--          Login-->
-        <!--          </router-link>-->
-        <!--        </el-menu-item>-->
-        <el-menu-item index="8-1" v-if="verifyLogin()">
-          <router-link to="/profile"> My profile </router-link>
+
+        <el-menu-item
+          index="8-1"
+          v-if="verifyLogin()"
+          @click="clickItem('profile')"
+        >
+          My profile
         </el-menu-item>
         <el-menu-item index="8-2" v-if="verifyLogin()">Log out</el-menu-item>
       </el-submenu>
@@ -83,6 +78,15 @@ export default {
       console.log(check);
       return 1;
     },
+    clickItem(link) {
+      this.$router.push("/" + link);
+    },
+  },
+  created() {
+    this.userId = 1;
+    if (this.verifyLogin()) {
+      return;
+    }
   },
 };
 </script>
