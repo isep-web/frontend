@@ -18,7 +18,9 @@ export default new Vuex.Store({
     },
     delToken(state) {
       state.token = "";
+      state.userid = "";
       localStorage.removeItem("token"); //删除token
+      sessionStorage.clear();
     },
   },
   getters: {
