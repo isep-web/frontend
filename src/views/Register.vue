@@ -13,10 +13,10 @@
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
 
-      <el-form-item label="Gender" style="text-align: left">
-        <el-radio v-model="ruleForm.gender" label="1">Female</el-radio>
-        <el-radio v-model="ruleForm.gender" label="2">Male</el-radio>
-      </el-form-item>
+      <!--      <el-form-item label="Gender" style="text-align: left">-->
+      <!--        <el-radio v-model="ruleForm.gender" label="1">Female</el-radio>-->
+      <!--        <el-radio v-model="ruleForm.gender" label="2">Male</el-radio>-->
+      <!--      </el-form-item>-->
       <el-form-item label="Email">
         <el-input
           placeholder="input your email"
@@ -119,22 +119,25 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        const info = {
-          userId: "",
-        };
-        Object.assign(info, this.ruleForm);
+        const encry = {};
+        encry.username = this.ruleForm.username;
+        encry.password = this.ruleForm.password;
+        encry.email = this.ruleForm.email;
+        encry.phone = this.ruleForm.phone;
 
-        console.log(info);
         if (valid) {
-          UserDataService.postuser(info).then((response) => {
-            console.log(response);
-            this.userId = response.data._links.self.href.split("/").pop();
-            console.log("this userId is " + this.userId);
-            this.ruleForm.userId = this.userId;
-            console.log(JSON.stringify(this.ruleForm));
-          });
+          // UserDataService.postuser(info).then((response) => {
+          //   console.log(response);
+          //   this.userId = response.data._links.self.href.split("/").pop();
+          //   console.log("this userId is " + this.userId);
+          //   this.ruleForm.userId = this.userId;
+          //   console.log(JSON.stringify(this.ruleForm));
+          // });
 
-          // this.$router.push({name: '', params:{houseName: this.ruleForm.title}});
+          UserDataService.registerpost(encry).then((response) => {
+            console.log(response);
+            alert("Success register");
+          });
           this.$router.push({ name: "Login" });
         } else {
           console.log("error submit!!");

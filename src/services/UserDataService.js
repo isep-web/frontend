@@ -14,6 +14,12 @@ class UserDataService {
   authpost(form) {
     return axios.post("/auth", form);
   }
+  patchpassword(form) {
+    return axios.patch("/register", form);
+  }
+  registerpost(form) {
+    return axios.post("/register", form);
+  }
 }
 
 export default new UserDataService();
