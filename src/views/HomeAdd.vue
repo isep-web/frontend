@@ -492,17 +492,13 @@ export default {
               fileData.type = 1;
               // console.log(fileData);
               for (let i = 0; i < this.ruleForm.fileList2.length; i++) {
-                HomeDataService.putHousePhotos(this.houseId, fileData).then(
-                  (response) => {
-                    const picId = response.data._links.self.href
-                      .split("/")
-                      .pop();
-                    HomeDataService.putPictureContent(
-                      picId,
-                      this.ruleForm.fileList2[i]
-                    );
-                  }
-                );
+                HomeDataService.putHousePhotos(fileData).then((response) => {
+                  const picId = response.data._links.self.href.split("/").pop();
+                  HomeDataService.putPictureContent(
+                    picId,
+                    this.ruleForm.fileList2[i]
+                  );
+                });
               }
 
               // alert("添加成功");
@@ -539,17 +535,13 @@ export default {
               fileData.type = 1;
               // console.log(fileData);
               for (let i = 0; i < this.ruleForm.fileList2.length; i++) {
-                HomeDataService.putHousePhotos(this.houseId, fileData).then(
-                  (response) => {
-                    const picId = response.data._links.self.href
-                      .split("/")
-                      .pop();
-                    HomeDataService.putPictureContent(
-                      picId,
-                      this.ruleForm.fileList2[i]
-                    );
-                  }
-                );
+                HomeDataService.putHousePhotos(fileData).then((response) => {
+                  const picId = response.data._links.self.href.split("/").pop();
+                  HomeDataService.putPictureContent(
+                    picId,
+                    this.ruleForm.fileList2[i]
+                  );
+                });
               }
             });
 

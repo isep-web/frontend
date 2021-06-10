@@ -95,6 +95,7 @@ export default {
     },
   },
   created() {
+    //如果有userId就读取用户的头像
     if (this.$store.getters.userid > 0) {
       this.userId = this.$store.getters.userid;
       let list = localStorage.getItem("token");
