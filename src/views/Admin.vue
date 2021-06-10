@@ -167,6 +167,10 @@ export default {
             this.tableData[i].avatar = r.data._links.content.href;
             console.log(this.tableData[i].avatar);
           });
+          if (!this.tableData[i].avatar) {
+            this.tableData[i].avatar =
+              "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+          }
         }
       });
     },
