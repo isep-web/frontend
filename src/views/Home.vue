@@ -13,7 +13,6 @@ export default {
       let list = localStorage.getItem("token");
       console.log(list);
       console.log("idnei" + this.$store.getters.userid);
-      console.log("role" + this.$store.getters.role);
     },
   },
   created() {
