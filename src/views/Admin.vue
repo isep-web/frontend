@@ -105,8 +105,8 @@
 
 <script>
 import AdminService from "@/services/AdminService";
+import HomeDataService from "@/services/HomeDataService";
 import { ElMessage } from "element-plus";
-import axios from "axios";
 export default {
   data() {
     return {
@@ -163,10 +163,15 @@ export default {
             this.tableData[i]._links.self.href
           );
           //读用户头像
-          this.getAvatar(this.tableData[i]._links.avatar.href).then((r) => {
-            this.tableData[i].avatar = r.data._links.content.href;
-            console.log(this.tableData[i].avatar);
-          });
+          HomeDataService.retrievePicByUserId(this.tableData[i].id).then(
+            (r) => {
+              this.tableData[i].avatar = r.data._links.content.href;
+            }
+          );
+          if (!this.tableData[i].avatar) {
+            this.tableData[i].avatar =
+              "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+          }
         }
       });
     },
@@ -175,9 +180,6 @@ export default {
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
-    },
-    getAvatar(href) {
-      return axios.get(href);
     },
   },
   created() {

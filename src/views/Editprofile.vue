@@ -42,7 +42,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="Comfirm Password" prop="comfirmpassword">
+          <el-form-item label="Confirm" prop="comfirmpassword">
             <el-input
               v-model="ruleForm.comfirmpassword"
               show-password
@@ -115,18 +115,29 @@
     </el-card>
 
     <el-card class="box-card">
-      <label>Photo of your home</label>
+      <!--      <label></label>-->
       <p>Upload or modify your avatar</p>
-      <el-upload
-        class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
-      >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
+      <label for="file">
+        <img class="avatar" :src="imageUrl" />
+      </label>
+      <input
+        id="file"
+        name="file"
+        type="file"
+        accept="image/png,image/gif,image/jpeg"
+        @change="handleChange($event)"
+        style="display: none"
+      />
+      <!--      <el-upload-->
+      <!--        class="avatar-uploader"-->
+      <!--        action="https://jsonplaceholder.typicode.com/posts/"-->
+      <!--        :show-file-list="false"-->
+      <!--        :on-success="handleAvatarSuccess"-->
+      <!--        :before-upload="beforeAvatarUpload"-->
+      <!--      >-->
+      <!--        <img v-if="imageUrl" :src="imageUrl" class="avatar" />-->
+      <!--        <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+      <!--      </el-upload>-->
       <el-form-item>
         <el-button
           type="primary"
@@ -141,16 +152,21 @@
 
 <script>
 import UserDataService from "../services/UserDataService";
+import { mapGetters } from "vuex";
+import HomeDataService from "../services/HomeDataService";
 
 export default {
   data() {
     return {
-      imageUrl: "",
+      imageHad: -1,
+      imageUrl:
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      userId: Number,
+      avatarFile: null,
       ruleForm: {
         username: "",
         password: "",
         comfirmpassword: "",
-
         email: "",
         phone: "",
       },
@@ -209,12 +225,10 @@ export default {
         }
         console.log(info);
         if (valid) {
-          UserDataService.patchuser(this.$store.getters.userid, info).then(
-            (response) => {
-              console.log(response.data);
-              console.log(this.$store.getters.userid);
-            }
-          );
+          UserDataService.patchuser(this.userId, info).then((response) => {
+            console.log(response.data);
+            console.log(this.userId);
+          });
           this.$router.push({ name: "Profile" });
         } else {
           console.log("error submit!!");
@@ -233,6 +247,22 @@ export default {
           UserDataService.patchuser(this.$store.getters.userid, info).then(
             (response) => console.log(response)
           );
+          //如果用户添加了头像文件，avatarFile不为空
+          if (this.avatarFile) {
+            //如果已经上传过头像，先删除头像
+            if (this.imageHad > 0) {
+              HomeDataService.deletePic(this.imageHad);
+            }
+            const fileData = {};
+            const uid = {};
+            uid.id = this.userId;
+            fileData.user = uid;
+            fileData.type = 0;
+            HomeDataService.putHousePhotos(fileData).then((response) => {
+              const picId = response.data._links.self.href.split("/").pop();
+              HomeDataService.putPictureContent(picId, this.avatarFile);
+            });
+          }
           this.$router.push({ name: "Profile" });
         } else {
           console.log("error submit!!");
@@ -255,26 +285,41 @@ export default {
           this.ruleForm2.location = JSON.parse(response.data.location);
         }
       );
+      HomeDataService.retrievePicByUserId(this.userId).then((response) => {
+        this.imageUrl = response.data._links.content.href;
+        this.imageHad = response.data._links.self.href.split("/").pop();
+      });
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      console.log(file);
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+    handleChange(e) {
+      const file = e.target.files[0] || e.dataTransfer.files[0];
+      let URL = window.URL || window.webkitURL; // 获取当前域名地址
+      this.imageUrl = URL.createObjectURL(file);
 
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
+      let param = new FormData(); //创建form对象
+      param.append("file", file, file.name); //通过append向form对象添加数据
+
+      this.avatarFile = param;
     },
+    // handleAvatarSuccess(res, file) {
+    //   this.imageUrl = URL.createObjectURL(file.raw);
+    //   console.log(file);
+    // },
+    // beforeAvatarUpload(file) {
+    //   const isJPG = file.type === "image/jpeg";
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
+    //
+    //   if (!isJPG) {
+    //     this.$message.error("上传头像图片只能是 JPG 格式!");
+    //   }
+    //   if (!isLt2M) {
+    //     this.$message.error("上传头像图片大小不能超过 2MB!");
+    //   }
+    //   return isJPG && isLt2M;
+    // },
   },
 
   created() {
+    this.userId = this.$store.getters.userid;
     this.refreshUser();
   },
 };

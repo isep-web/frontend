@@ -10,6 +10,9 @@ class ApplyHouseService {
   getMessage(msgForm) {
     return 0;
   }
+  getUser(userId) {
+    return axios.get("http://localhost:17698/users/" + userId);
+  }
 }
 
 export default new ApplyHouseService();

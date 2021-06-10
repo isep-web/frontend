@@ -209,8 +209,6 @@
 <script>
 import HouseDataService from "@/services/HomeDataService";
 import ApplyHouseService from "@/services/ApplyHouseService";
-import { mapGetters } from "vuex";
-import axios from "axios";
 import { ElMessage } from "element-plus";
 export default {
   name: "HomeDetail",
@@ -233,10 +231,8 @@ export default {
         displayName: "",
         email: "",
         phone: "",
-        gender: "",
         language: "",
         description: "",
-        //icon: "",
         avatar: "",
         location: "",
       },
@@ -265,22 +261,24 @@ export default {
         this.houseData.area = response.data.area;
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
-        this.msgForm.targetUserId = response.data.userId; // 给发消息用
         console.log("UserId: " + response.data.userId);
-        this.getUserName(response.data.userId).then((response) => {
+        ApplyHouseService.getUser(response.data.userId).then((response) => {
           //console.log(response.data);
           this.userData.displayName = response.data.displayName;
           this.userData.email = response.data.email;
           this.userData.phone = response.data.phone;
-          this.userData.gender = response.data.gender;
           this.userData.language = response.data.language;
           this.userData.description = response.data.description;
-          //this.userData.icon = response.data.icon;
           //用户头像
-          this.getAvatar(response.data._links.avatar.href).then((r) => {
-            this.userData.avatar = r.data._links.content.href;
-            console.log(this.userData.avatar);
-          });
+          HouseDataService.retrievePicByUserId(this.houseData.userId).then(
+            (r) => {
+              this.userData.avatar = r.data._links.content.href;
+            }
+          );
+          if (this.userData.avatar === "") {
+            this.userData.avatar =
+              "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+          }
           this.userData.location = response.data.location;
           console.log(this.userData);
         });
@@ -308,7 +306,7 @@ export default {
         }
       });
       //读取房间图片
-      this.getHousePic(houseId).then((response) => {
+      HouseDataService.retrievePicByHouseId(houseId).then((response) => {
         for (let i = 0; i < response.data._embedded.pictures.length; i++) {
           this.houseData.pictures[i] =
             response.data._embedded.pictures[i]._links.content.href;
@@ -317,26 +315,40 @@ export default {
     },
     onSubmit(form) {
       this.form.house.id = parseInt(this.houseId); // 给请求用
-      this.form.sourceUser.id = this.$store.getters.userid;
+      this.form.sourceUser.id = parseInt(this.$store.getters.userid);
       this.form.targetUser.id = this.houseData.userId; //给请求用
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          console.log("ApplyData: " + JSON.stringify(this.form));
-          ApplyHouseService.postApplication(this.form).then((response) => {
-            console.log(response.data);
+      if (
+        this.form.sourceUser.id !== this.form.targetUser.id &&
+        this.form.startDate !== "" &&
+        this.form.endDate !== "" &&
+        this.form.startDate < this.form.endDate
+      ) {
+        console.log("ApplyData: " + JSON.stringify(this.form));
+        ApplyHouseService.postApplication(this.form).then((response) => {
+          console.log(response.data);
+          console.log("submit!");
+          ElMessage.success({
+            dangerouslyUseHTMLString: true,
+            message: 'Apply successfully!<strong style="color:green" />',
+            type: "success",
+            center: true,
           });
-        } else {
-          console.log("error submit!!");
+        });
+      } else {
+        if (this.form.sourceUser.id === this.form.targetUser.id) {
+          ElMessage.error("You can't apply your own house!");
+          return false;
+        } else if (this.form.startDate === "") {
+          ElMessage.error("Please choose start date!");
+          return false;
+        } else if (this.form.endDate === "") {
+          ElMessage.error("Please choose end date!");
+          return false;
+        } else if (this.form.startDate > this.form.endDate) {
+          ElMessage.error("Start date shouldn't be later than end date!");
           return false;
         }
-      });
-      console.log("submit!");
-      ElMessage.success({
-        dangerouslyUseHTMLString: true,
-        message: 'Apply successfully!<strong style="color:green" />',
-        type: "success",
-        center: true,
-      });
+      }
     },
     open() {
       this.$prompt("Input your message", "Contact host", {
@@ -350,12 +362,12 @@ export default {
           });
           console.log(value);
           this.msgForm.content = value;
-          //测试用 sourceUserId
-          this.msgForm.sourceUserId = 2;
-          console.log(this.msgForm);
-          ApplyHouseService.postMessage(this.msgForm).then((response) => {
-            console.log(response.data);
-          });
+          // //测试用 sourceUserId
+          // this.msgForm.sourceUserId = 2;
+          // console.log(this.msgForm);
+          // ApplyHouseService.postMessage(this.msgForm).then((response) => {
+          //   console.log(response.data);
+          // });
         })
         .catch(() => {
           this.$message({
@@ -366,15 +378,6 @@ export default {
     },
     handleChange(value) {
       console.log(value);
-    },
-    getUserName(userId) {
-      return axios.get("http://localhost:17698/users/" + userId);
-    },
-    getAvatar(href) {
-      return axios.get(href);
-    },
-    getHousePic(houseId) {
-      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
     },
   },
   created() {

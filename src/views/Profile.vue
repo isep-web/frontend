@@ -6,7 +6,7 @@
           <div class="col-md-2 column">
             <img
               alt="140x140"
-              src="../assets/exchangehome.png"
+              :src="avatarURL"
               class="img-circle"
               style="width: 100px; height: 100px; margin-bottom: 10px"
             />
@@ -63,7 +63,10 @@
         >
           <!--          <h4 >Home</h4>-->
           <div class="thumbnail">
-            <img src="{{house.picture}}" />
+            <div style="height: 150px">
+              <img :src="house.photo" style="height: 100%" />
+            </div>
+
             <div class="caption">
               <h4>{{ house.title }}</h4>
               <p style="color: #666666">
@@ -79,7 +82,11 @@
               <br />
               <br />
               <p>
-                <a href=" " class="btn btn-primary" role="button">
+                <a
+                  :href="'/homeDetail?houseId=' + house.houseId"
+                  class="btn btn-primary"
+                  role="button"
+                >
                   View details
                 </a>
               </p>
@@ -94,6 +101,7 @@
 <script>
 import HomeDataService from "../services/HomeDataService";
 import UserDataService from "../services/UserDataService";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Profile",
@@ -103,17 +111,23 @@ export default {
       numberOfHouses: 0,
       users: [],
       houses: [],
+      userId: Number,
+      avatarURL:
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
     };
   },
 
   methods: {
     refreshuser() {
-      UserDataService.retrieveAllUser(this.$store.getters.userid) //HARDCODED
+      UserDataService.retrieveAllUser(this.userId) //HARDCODED
         .then((response) => {
-          console.log(this.$store.getters.userid);
+          // console.log(this.userId);
           this.users = response.data;
           console.log(response.data);
         });
+      HomeDataService.retrievePicByUserId(this.userId).then((response) => {
+        this.avatarURL = response.data._links.content.href;
+      });
     },
     refreshhouse() {
       HomeDataService.retrieveAllHouse() //HARDCODED
@@ -124,18 +138,26 @@ export default {
           this.numberOfHouses = 0;
 
           for (let i = 0; i < this.houses.length; i++) {
-            console.log(this.houses[i]);
-            if (this.houses[i].userId == this.$store.getters.userid) {
+            // console.log(this.houses[i]);
+            if (this.houses[i].userId == this.userId) {
               this.numberOfHouses++;
 
               this.houses[i].houseId = this.getHouseId(
                 this.houses[i]._links.self.href
               );
+              HomeDataService.retrievePicByHouseId(this.houses[i].houseId).then(
+                (res) => {
+                  if (res.data._embedded.pictures.length) {
+                    this.houses[i].photo =
+                      res.data._embedded.pictures[0]._links.self.href;
+                  }
+                }
+              );
             } else {
               this.houses.splice(i, 1);
               i--;
             }
-            console.log(this.houses);
+            // console.log(this.houses);
           }
         });
     },
@@ -145,6 +167,7 @@ export default {
   },
 
   created() {
+    this.userId = this.$store.getters.userid;
     this.refreshhouse();
     this.refreshuser();
   },

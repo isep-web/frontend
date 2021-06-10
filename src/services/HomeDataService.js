@@ -54,9 +54,9 @@ class HomeDataService {
     return axios.put("/houses/" + houseId, form);
   }
 
-  putHousePhotos(houseId, files) {
-    // return axios.put("/houses" + houseId + "/photos", files);
-    return axios.post("/pictures", files);
+  putHousePhotos(files) {
+    // return axios.put("http://localhost:17698/houses" + houseId + "/photos", files);
+    return axios.post("http://localhost:17698/pictures", files);
   }
   putPictureContent(picId, file) {
     let config = {
