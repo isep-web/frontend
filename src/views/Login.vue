@@ -18,7 +18,7 @@
       <!--      <el-form-item label="Password" prop="password">-->
       <el-form-item label="Password">
         <el-input
-          placeholder="请输入密码"
+          placeholder="Please input your password"
           v-model="ruleForm.password"
           show-password
         ></el-input>
@@ -39,28 +39,33 @@
     <!--      <label>Remember me</label>-->
     <!--    </div>-->
 
-    <el-form-item>
-      <el-button
-        type="primary"
-        @click="submitForm('ruleForm')"
-        style="width: 150px"
-        >Submit</el-button
-      >
-    </el-form-item>
+    <el-form>
+      <el-form-item>
+        <el-button
+          type="primary"
+          @click="submitForm('ruleForm')"
+          style="width: 150px"
+          >Submit
+        </el-button>
+      </el-form-item>
+    </el-form>
 
     <div class="bottom_text">
       Don't have an account?
-      <router-link to="/register">Sign up!</router-link><br /><br />
+      <router-link to="/register">Sign up!</router-link>
+      <br /><br />
       <a href="#">Forget password?</a>
     </div>
   </el-card>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-import { mapState } from "vuex";
+// import { mapMutations } from "vuex";
+// import { mapState } from "vuex";
+import store from "@/store/index.ts";
 import { Base64 } from "js-base64";
 import UserDataService from "../services/UserDataService";
+
 export default {
   data() {
     return {
@@ -87,15 +92,15 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["setToken"]),
-    ...mapMutations(["setId"]),
+    // ...mapMutations(["setToken"]),
+    // ...mapMutations(["setId"]),
     // ...mapMutations(['userid']),
     // ...mapMutations(['role']),
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         const info = {};
         Object.assign(info, this.ruleForm);
-        console.log(info);
+        // console.log(info);
         if (valid) {
           UserDataService.authpost(info).then((response) => {
             let token = response.data.data.token;
@@ -105,26 +110,29 @@ export default {
             str = str[str.length - 2];
             //2.进行base64解密
             let destr = Base64.decode(str);
-            console.log(destr);
+            // console.log(destr);
             //3.设置token
-            this.setToken({ token: destr });
+            localStorage.setItem("token", token);
+            store.commit("setToken", token);
+            // this.setToken({ token: destr });
             let result = JSON.parse(destr);
-            console.log(result);
+            // console.log(result);
             console.log("roles" + result.roles);
             //4.设置id
             let userid = result.jti;
-            console.log("id" + result.jti);
-            this.$store.commit("setId", userid);
+            // console.log("id" + result.jti);
+            store.commit("setId", userid);
+            store.commit("setRole", result.roles[0]);
             //5.区分user,admin
             this.roles = result.roles;
             let flag = 0;
             for (let i = 0; i < this.roles.length; i++) {
-              console.log(this.roles[i]);
-              if (this.roles[i] == "admin") {
+              // console.log(this.roles[i]);
+              if (this.roles[i] === "admin") {
                 flag = 1;
               }
             }
-            if (flag == 1) {
+            if (flag === 1) {
               this.$router.push({ name: "Admin" });
             } else {
               this.$router.push({ name: "Home" });
@@ -144,6 +152,7 @@ export default {
 body {
   background: #eaecf0;
 }
+
 .box-card {
   width: 50%;
   margin-left: 25%;
@@ -152,8 +161,10 @@ body {
   /*text-align: left;*/
   padding-top: 20px;
 }
+
 p {
   margin-bottom: 50px;
 }
+
 @import url(https://unpkg.com/bootstrap@3.3.5/dist/css/bootstrap.min.css);
 </style>

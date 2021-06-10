@@ -1,15 +1,17 @@
-import axios from "axios";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import axios from "@/request/http";
 
 class SearchHouseService {
   retrieveAllHouses() {
-    return axios.get("http://localhost:17698/houses");
+    return axios.get("/houses");
   }
   retrieveAllHousesAmenities(amenityHref: any) {
     return axios.get(amenityHref);
   }
   search(a: string, g: string, min: string, max: string, title: string) {
     console.log(
-      "http://localhost:17698/houses/advancedSearch?amenities=" +
+      "/houses/advancedSearch?amenities=" +
         a +
         "&guestNumber=" +
         g +
@@ -21,7 +23,7 @@ class SearchHouseService {
         title
     );
     return axios.get(
-      "http://localhost:17698/houses/advancedSearch?amenities=" +
+      "/houses/advancedSearch?amenities=" +
         a +
         "&guestNumber=" +
         g +

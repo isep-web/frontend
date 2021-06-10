@@ -67,8 +67,8 @@
   </div>
 </template>
 <script>
-import { mapMutations } from "vuex";
-import { mapGetters } from "vuex";
+import store from "@/store/index";
+// import { mapGetters } from "vuex";
 import HomeDataService from "../services/HomeDataService";
 export default {
   name: "Navbar",
@@ -82,7 +82,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["delToken"]),
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -97,8 +96,8 @@ export default {
   created() {
     if (this.$store.getters.userid > 0) {
       this.userId = this.$store.getters.userid;
-      let list = localStorage.getItem("token");
-      this.role = JSON.parse(list).roles[0];
+      console.log(store.state);
+      this.role = store.state.role;
 
       HomeDataService.retrievePicByUserId(this.userId).then((response) => {
         this.circleUrl = response.data._links.content.href;

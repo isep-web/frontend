@@ -5,22 +5,24 @@ import Vuex from "vuex";
 
 export default new Vuex.Store({
   state: {
-    token: localStorage.getItem("token") ? localStorage.getItem("token") : "",
+    token: "",
     userid: "",
+    role: "",
   },
   mutations: {
     setToken(state, token) {
       state.token = token;
-      localStorage.setItem("token", token.token); //存储token
     },
     setId(state, userid) {
       state.userid = userid;
     },
+    setRole(state, role) {
+      state.role = role;
+    },
     delToken(state) {
       state.token = "";
       state.userid = "";
-      localStorage.removeItem("token"); //删除token
-      sessionStorage.clear();
+      state.role = "";
     },
   },
   getters: {

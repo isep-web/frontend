@@ -1,18 +1,18 @@
-import axios from "axios";
+import axios from "@/request/http";
 
 class UserDataService {
   retrieveAllUser(userId) {
-    return axios.get("http://localhost:17698/users/" + userId);
+    return axios.get("/users/" + userId);
   }
 
   patchuser(userId, form) {
-    return axios.patch("http://localhost:17698/users/" + userId, form);
+    return axios.patch("/users/" + userId, form);
   }
   postuser(form) {
-    return axios.post("http://localhost:17698/users", form);
+    return axios.post("/users", form);
   }
   authpost(form) {
-    return axios.post("http://localhost:17698/auth", form);
+    return axios.post("/auth", form);
   }
 }
 
