@@ -211,6 +211,7 @@ import HouseDataService from "@/services/HomeDataService";
 import ApplyHouseService from "@/services/ApplyHouseService";
 import { mapGetters } from "vuex";
 import axios from "axios";
+import { ElMessage } from "element-plus";
 export default {
   name: "HomeDetail",
   data() {
@@ -315,7 +316,6 @@ export default {
       });
     },
     onSubmit(form) {
-      //测试用 sourceUser为2
       this.form.house.id = parseInt(this.houseId); // 给请求用
       this.form.sourceUser.id = this.$store.getters.userid;
       this.form.targetUser.id = this.houseData.userId; //给请求用
@@ -331,6 +331,12 @@ export default {
         }
       });
       console.log("submit!");
+      ElMessage.success({
+        dangerouslyUseHTMLString: true,
+        message: 'Apply successfully!<strong style="color:green" />',
+        type: "success",
+        center: true,
+      });
     },
     open() {
       this.$prompt("Input your message", "Contact host", {
