@@ -209,6 +209,7 @@
 <script>
 import HouseDataService from "@/services/HomeDataService";
 import ApplyHouseService from "@/services/ApplyHouseService";
+import { mapGetters } from "vuex";
 import axios from "axios";
 export default {
   name: "HomeDetail",
@@ -316,7 +317,7 @@ export default {
     onSubmit(form) {
       //测试用 sourceUser为2
       this.form.house.id = parseInt(this.houseId); // 给请求用
-      this.form.sourceUser.id = 2;
+      this.form.sourceUser.id = this.$store.getters.userid;
       this.form.targetUser.id = this.houseData.userId; //给请求用
       this.$refs[form].validate((valid) => {
         if (valid) {
