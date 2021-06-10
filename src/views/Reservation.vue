@@ -74,6 +74,7 @@
 <script>
 import { ElMessage } from "element-plus";
 import HomeDataService from "../services/HomeDataService";
+import { mapGetters } from "vuex";
 export default {
   name: "Application",
   data() {
@@ -86,6 +87,7 @@ export default {
   methods: {
     refreshApps() {
       HomeDataService.retrieveAllReservations(this.userId).then((response) => {
+        // console.log("reservations");
         // console.log(response.data._embedded.applications);
         this.reservations = response.data._embedded.applications;
         for (let i = 0; i < this.reservations.length; i++) {
@@ -155,7 +157,7 @@ export default {
     },
   },
   created() {
-    this.userId = 1;
+    this.userId = this.$store.getters.userid;
     this.refreshApps();
   },
 };

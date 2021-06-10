@@ -72,6 +72,7 @@
 <script>
 import { ElMessage } from "element-plus";
 import HomeDataService from "../services/HomeDataService";
+import { mapGetters } from "vuex";
 export default {
   name: "Application",
   data() {
@@ -84,7 +85,8 @@ export default {
   methods: {
     refreshApps() {
       HomeDataService.retrieveAllApps(this.userId).then((response) => {
-        console.log(response.data._embedded.applications);
+        // console.log("applications");
+        // console.log(response.data._embedded.applications);
         this.apps = response.data._embedded.applications;
         for (let i = 0; i < this.apps.length; i++) {
           //添加每个申请对应的house的title和id到数据里
@@ -139,7 +141,7 @@ export default {
     },
   },
   created() {
-    this.userId = 1;
+    this.userId = this.$store.getters.userid;
     this.refreshApps();
   },
 };

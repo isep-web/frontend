@@ -348,6 +348,7 @@
 
 <script>
 import HomeDataService from "../services/HomeDataService";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -458,7 +459,7 @@ export default {
         delete info.constraints;
         delete info.services;
         info.location = JSON.stringify(this.ruleForm.location);
-        info.userId = 1;
+        info.userId = this.$store.getters.userid;
 
         console.log(info);
         if (valid) {
@@ -483,7 +484,9 @@ export default {
 
               // 上传图片
               const fileData = {};
-              fileData.house = "http://localhost:17698/houses/" + this.houseId;
+              const hid = {};
+              hid.id = this.houseId;
+              fileData.house = hid;
               // fileData.user = "http://localhost:17698/user/" + this.houseId;
 
               fileData.type = 1;
@@ -528,7 +531,9 @@ export default {
               }
               // 上传图片
               const fileData = {};
-              fileData.house = "http://localhost:17698/houses/" + this.houseId;
+              const hid = {};
+              hid.id = this.houseId;
+              fileData.house = hid;
               // fileData.user = "http://localhost:17698/user/" + this.houseId;
 
               fileData.type = 1;
@@ -551,7 +556,7 @@ export default {
             this.timer = setTimeout(() => {
               //设置延迟执行
               console.log("ok");
-            }, 1000);
+            }, 3000);
             // alert("修改成功");
             this.$router.push({
               name: "Publishing",

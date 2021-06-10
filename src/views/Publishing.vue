@@ -58,6 +58,7 @@
 <script>
 import { ElMessage } from "element-plus";
 import HomeDataService from "../services/HomeDataService";
+import { mapGetters } from "vuex";
 export default {
   name: "Publishing",
   data() {
@@ -76,7 +77,7 @@ export default {
         this.numberOfHouses = 0;
         //在所有houses中筛选该用户的house
         for (let i = 0; i < this.houses.length; i++) {
-          if (this.houses[i].userId === this.id) {
+          if (this.houses[i].userId === parseInt(this.id)) {
             this.numberOfHouses++;
             this.houses[i].houseId = this.getHouseId(
               this.houses[i]._links.self.href
@@ -86,8 +87,6 @@ export default {
                 if (res.data._embedded.pictures.length) {
                   this.houses[i].photo =
                     res.data._embedded.pictures[0]._links.self.href;
-                } else {
-                  this.hosues[i].photo = "";
                 }
               }
             );
@@ -126,7 +125,8 @@ export default {
     },
   },
   created() {
-    this.id = 1;
+    this.id = this.$store.getters.userid;
+    console.log(this.id);
     this.refreshHouses();
     if (this.$route.params.houseName !== undefined) {
       this.houses = null;
@@ -147,7 +147,7 @@ export default {
 
 <style>
 .addButton {
-  margin-top: 50%;
+  margin-top: 40%;
   width: 60px;
   height: 60px;
   background-color: white;

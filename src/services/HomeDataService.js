@@ -35,6 +35,9 @@ class HomeDataService {
   retrievePicByHouseId(houseId) {
     return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
   }
+  retrievePicByUserId(userId) {
+    return axios.get("http://localhost:17698/users/" + userId + "/avatar");
+  }
 
   getByLink(link) {
     return axios.get(link);

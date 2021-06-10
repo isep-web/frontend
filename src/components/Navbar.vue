@@ -18,7 +18,7 @@
         <router-link to="/search"> Search </router-link>
       </el-menu-item>
       <el-menu-item index="3" @click="clickItem('application')">
-        <router-link to="/application"> My publishing </router-link>
+        <router-link to="/application"> Applications </router-link>
       </el-menu-item>
       <el-menu-item index="4" @click="clickItem('publishing')">
         <router-link to="/publishing"> My publishing </router-link>
@@ -41,22 +41,35 @@
 
       <el-submenu index="8">
         <template #title>
-          <el-avatar :size="medium" :src="circleUrl" style="margin-right: 10px">
+          <el-avatar
+            class="avatar"
+            :size="medium"
+            :src="circleUrl"
+            style="margin-right: 10px"
+            @click="clickItem('editprofile')"
+          >
           </el-avatar>
           My account
         </template>
-        s
         <el-menu-item index="8-1" @click="clickItem('profile')">
           My profile
         </el-menu-item>
-        <el-menu-item index="8-2" @click="Logout()">Log out</el-menu-item>
+        <el-menu-item
+          v-if="this.role === 'admin'"
+          index="8-2"
+          @click="clickItem('admin')"
+        >
+          Admin
+        </el-menu-item>
+        <el-menu-item index="8-3" @click="Logout()">Log out</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 <script>
 import { mapMutations } from "vuex";
-
+import { mapGetters } from "vuex";
+import HomeDataService from "../services/HomeDataService";
 export default {
   name: "Navbar",
   data() {
@@ -65,6 +78,7 @@ export default {
       activeIndex2: "1",
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      role: "",
     };
   },
   methods: {
@@ -81,7 +95,21 @@ export default {
     },
   },
   created() {
-    this.userId = 1;
+    if (this.$store.getters.userid > 0) {
+      this.userId = this.$store.getters.userid;
+      let list = localStorage.getItem("token");
+      this.role = JSON.parse(list).roles[0];
+
+      HomeDataService.retrievePicByUserId(this.userId).then((response) => {
+        this.circleUrl = response.data._links.content.href;
+      });
+    }
   },
 };
 </script>
+
+<style>
+.avatar:hover {
+  opacity: 70%;
+}
+</style>
