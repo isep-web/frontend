@@ -239,12 +239,12 @@ export default {
         location: "",
       },
       form: {
-        house: "",
+        house: {},
         guestNumber: 1,
         startDate: "",
         endDate: "",
-        sourceUser: "",
-        targetUser: "",
+        sourceUser: {},
+        targetUser: {},
       },
       msgForm: {
         sourceUserId: 0,
@@ -263,7 +263,6 @@ export default {
         this.houseData.area = response.data.area;
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
-        this.form.house = response.data._links.self.href; // 给请求用
         this.msgForm.targetUserId = response.data.userId; // 给发消息用
         console.log("UserId: " + response.data.userId);
         this.getUserName(response.data.userId).then((response) => {
@@ -281,7 +280,6 @@ export default {
             console.log(this.userData.avatar);
           });
           this.userData.location = response.data.location;
-          this.form.targetUser = response.data._links.self.href; //给请求用
           console.log(this.userData);
         });
         console.log(this.houseData);
@@ -316,8 +314,10 @@ export default {
       });
     },
     onSubmit(form) {
-      //测试用 sourceUser
-      this.form.sourceUser = "http://localhost:17698/users/2";
+      //测试用 sourceUser为2
+      this.form.house.id = parseInt(this.houseId); // 给请求用
+      this.form.sourceUser.id = 2;
+      this.form.targetUser.id = this.houseData.userId; //给请求用
       this.$refs[form].validate((valid) => {
         if (valid) {
           console.log("ApplyData: " + JSON.stringify(this.form));

@@ -128,6 +128,16 @@ export default {
                   this.results[i].houseId = this.getHouseId(
                     this.results[i]._links.self.href
                   );
+                  this.getHousePic(this.results[i].houseId).then((r) => {
+                    //console.log(r.data);
+                    this.results[i].pictures = r.data._embedded.pictures;
+                    if (this.results[i].pictures.length != 0) {
+                      this.results[i].cover =
+                        this.results[i].pictures[0]._links.content.href;
+                    } else {
+                      this.results[i].cover = "";
+                    }
+                  });
                   //小卡片上的amenities
                   let ahref = this.results[i]._links.amenities.href;
                   let a = [];
@@ -159,8 +169,6 @@ export default {
       console.log("submit!");
     },
     refreshSearchResult() {
-      let a = [];
-      //this.houses.amenities = [];
       SearchHouseService.retrieveAllHouses().then((response) => {
         //console.log(response.data._embedded.houses);
         this.houses = response.data._embedded.houses;
@@ -187,7 +195,7 @@ export default {
         for (let i = 0; i < length; i++) {
           //console.log(response.data._embedded.houses[i]._links.amenities.href);
           let ahref = response.data._embedded.houses[i]._links.amenities.href;
-
+          let a = [];
           SearchHouseService.retrieveAllHousesAmenities(ahref).then((r) => {
             for (let j = 0; j < r.data._embedded.amenities.length; j++) {
               a[j] = r.data._embedded.amenities[j].name;
