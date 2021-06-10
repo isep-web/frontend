@@ -12,12 +12,12 @@ app.use(router);
 app.use(ElementPlus);
 app.mount("#app");
 
-const token = localStorage.getItem("token");
-if (token) {
-  store.commit("setToken", token);
-}
+// const token = localStorage.getItem("token");
+// if (token) {
+//   store.commit("setToken", token);
+// }
 
-localStorage.setItem("token", "123");
+// localStorage.setItem("token", "123");
 
 // Axios.interceptors.request.use(
 //   (config) => {

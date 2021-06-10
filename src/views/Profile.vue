@@ -28,7 +28,7 @@
               class="btn btn-default"
               style="margin-top: 50px"
             >
-              <router-link to="/editprofile"> Edit my profile </router-link>
+              <router-link to="/editprofile"> Edit my profile</router-link>
             </button>
           </div>
         </div>
@@ -101,6 +101,7 @@
 <script>
 import HomeDataService from "../services/HomeDataService";
 import UserDataService from "../services/UserDataService";
+import store from "@/store/index";
 import { mapGetters } from "vuex";
 
 export default {
@@ -119,6 +120,7 @@ export default {
 
   methods: {
     refreshuser() {
+      console.log(store.state);
       UserDataService.retrieveAllUser(this.userId) //HARDCODED
         .then((response) => {
           // console.log(this.userId);
@@ -139,7 +141,7 @@ export default {
 
           for (let i = 0; i < this.houses.length; i++) {
             // console.log(this.houses[i]);
-            if (this.houses[i].userId == this.userId) {
+            if (this.houses[i].userId === this.userId) {
               this.numberOfHouses++;
 
               this.houses[i].houseId = this.getHouseId(
@@ -181,5 +183,6 @@ export default {
   margin-top: 50px;
   padding: 20px 10px 10px 10px;
 }
+
 @import url(https://unpkg.com/bootstrap@3.3.5/dist/css/bootstrap.min.css);
 </style>
