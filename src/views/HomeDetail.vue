@@ -209,7 +209,6 @@
 <script>
 import HouseDataService from "@/services/HomeDataService";
 import ApplyHouseService from "@/services/ApplyHouseService";
-import axios from "axios";
 import { ElMessage } from "element-plus";
 export default {
   name: "HomeDetail",
@@ -263,7 +262,7 @@ export default {
         this.houseData.guestNumber = response.data.guestNumber;
         this.houseData.description = response.data.description;
         console.log("UserId: " + response.data.userId);
-        this.getUserName(response.data.userId).then((response) => {
+        ApplyHouseService.getUser(response.data.userId).then((response) => {
           //console.log(response.data);
           this.userData.displayName = response.data.displayName;
           this.userData.email = response.data.email;
@@ -271,9 +270,11 @@ export default {
           this.userData.language = response.data.language;
           this.userData.description = response.data.description;
           //用户头像
-          this.getAvatar(response.data._links.avatar.href).then((r) => {
-            this.userData.avatar = r.data._links.content.href;
-          });
+          HouseDataService.retrievePicByUserId(this.houseData.userId).then(
+            (r) => {
+              this.userData.avatar = r.data._links.content.href;
+            }
+          );
           if (this.userData.avatar === "") {
             this.userData.avatar =
               "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
@@ -305,7 +306,7 @@ export default {
         }
       });
       //读取房间图片
-      this.getHousePic(houseId).then((response) => {
+      HouseDataService.retrievePicByHouseId(houseId).then((response) => {
         for (let i = 0; i < response.data._embedded.pictures.length; i++) {
           this.houseData.pictures[i] =
             response.data._embedded.pictures[i]._links.content.href;
@@ -377,15 +378,6 @@ export default {
     },
     handleChange(value) {
       console.log(value);
-    },
-    getUserName(userId) {
-      return axios.get("http://localhost:17698/users/" + userId);
-    },
-    getAvatar(href) {
-      return axios.get(href);
-    },
-    getHousePic(houseId) {
-      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
     },
   },
   created() {

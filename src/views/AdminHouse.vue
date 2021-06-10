@@ -109,7 +109,7 @@ import AdminService from "@/services/AdminService";
 import HouseDataService from "@/services/HomeDataService";
 import HomeDataService from "@/services/HomeDataService";
 import { ElMessage } from "element-plus";
-import axios from "axios";
+
 export default {
   data() {
     return {
@@ -192,7 +192,7 @@ export default {
             }
           });
           //读取房间图片
-          this.getHousePic(houseIdTemp).then((r) => {
+          HouseDataService.retrievePicByHouseId(houseIdTemp).then((r) => {
             for (let m = 0; m < r.data._embedded.pictures.length; m++) {
               p.push(r.data._embedded.pictures[m]._links.content.href);
             }
@@ -208,9 +208,6 @@ export default {
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
-    },
-    getHousePic(houseId) {
-      return axios.get("http://localhost:17698/houses/" + houseId + "/photos");
     },
   },
   created() {
