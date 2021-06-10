@@ -1,18 +1,26 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <p>hhdhhhdhdhh</p>
+  <h1>{{ $store.state.count }}</h1>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+<script>
+import { mapGetters } from "vuex";
 
-@Options({
-  components: {
-    HelloWorld,
+export default {
+  name: "Home",
+  methods: {
+    loadComments() {
+      let list = localStorage.getItem("token");
+      console.log(list);
+      console.log("idnei" + this.$store.getters.userid);
+      console.log("role" + this.$store.getters.role);
+    },
   },
-})
-export default class Home extends Vue {}
+  created() {
+    this.loadComments();
+    console.log("id" + this.$store.getters.userid);
+  },
+};
 </script>
+
+<style scoped></style>

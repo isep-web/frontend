@@ -13,21 +13,31 @@
       class="demo-ruleForm"
     >
       <el-form-item label="Username">
-        <el-input v-model="ruleForm.userName"></el-input>
+        <el-input v-model="ruleForm.usernameOrEmailOrPhone"></el-input>
       </el-form-item>
-      <el-form-item label="Password" prop="password">
+      <!--      <el-form-item label="Password" prop="password">-->
+      <el-form-item label="Password">
         <el-input
           placeholder="请输入密码"
           v-model="ruleForm.password"
           show-password
         ></el-input>
       </el-form-item>
+
+      <div class="checkbox">
+        <input
+          type="checkbox"
+          value="remember-me"
+          v-model="ruleForm.remember"
+        />
+        <label>Remember me</label>
+      </div>
     </el-form>
 
-    <div class="checkbox">
-      <input type="checkbox" value="remember-me" />
-      <label>Remember me</label>
-    </div>
+    <!--    <div class="checkbox">-->
+    <!--      <input type="checkbox" value="remember-me" v-model="ruleForm.remember"/>-->
+    <!--      <label>Remember me</label>-->
+    <!--    </div>-->
 
     <el-form-item>
       <el-button
@@ -47,62 +57,81 @@
 </template>
 
 <script>
-// import UserDataService from "../services/UserDataService";
+import { mapMutations } from "vuex";
+import { mapState } from "vuex";
+import { Base64 } from "js-base64";
+import UserDataService from "../services/UserDataService";
 export default {
   data() {
     return {
       ruleForm: {
-        userName: "",
+        usernameOrEmailOrPhone: "",
         password: "",
+        remember: true,
       },
-      rules: {
-        password: [
-          {
-            pattern:
-              /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
-            required: true,
-            message: "名称必填",
-            trigger: "blur",
-          },
-          {
-            max: 30,
-            message: "名称长度不能超过30位",
-          },
-        ],
-      },
+      // rules: {
+      //   password: [
+      //     {
+      //       pattern:
+      //         /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
+      //       required: true,
+      //       message: "名称必填",
+      //       trigger: "blur",
+      //     },
+      //     {
+      //       max: 30,
+      //       message: "名称长度不能超过30位",
+      //     },
+      //   ],
+      // },
     };
   },
   methods: {
+    ...mapMutations(["setToken"]),
+    ...mapMutations(["setId"]),
+    // ...mapMutations(['userid']),
+    // ...mapMutations(['role']),
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         const info = {};
         Object.assign(info, this.ruleForm);
+        console.log(info);
         if (valid) {
-          this.$router.push({ name: "Profile" });
-          // UserDataService.retrieveAllUser(info).then((response) => {
-          //   console.log(response);
-          //   console.log(JSON.stringify(this.ruleForm));
-          //   let resuser =response.data._embedded.users;
-          //   console.log("resuser"+resuser.length);
-
-          // for (let i = 0; i < resuser.length; i++) {
-          //   console.log(resuser[i].userName);
-          //   if(resuser[i].userName===this.ruleForm.userName){
-          //     if(resuser[i].password==this.ruleForm.password){
-          //       //账号密码正确
-          //       this.userId = resuser[i]._links.self.href.split("/").pop();
-          //       console.log("this userId is " + this.userId);
-          //       this.$router.push({name: 'Home'});
-          //
-          //     }else {alert("password error")}
-          //   }
-          // }
-          // })
-        }
-
-        // this.$router.push({name: 'Login'});
-        else {
-          console.log("error submit!!");
+          UserDataService.authpost(info).then((response) => {
+            let token = response.data.data.token;
+            console.log(token);
+            //1.token三段
+            let str = token.split(".");
+            str = str[str.length - 2];
+            //2.进行base64解密
+            let destr = Base64.decode(str);
+            console.log(destr);
+            //3.设置token
+            this.setToken({ token: destr });
+            let result = JSON.parse(destr);
+            console.log(result);
+            console.log("roles" + result.roles);
+            //4.设置id
+            let userid = result.jti;
+            console.log("id" + result.jti);
+            this.$store.commit("setId", userid);
+            //5.区分user,admin
+            this.roles = result.roles;
+            let flag = 0;
+            for (let i = 0; i < this.roles.length; i++) {
+              console.log(this.roles[i]);
+              if (this.roles[i] == "admin") {
+                flag = 1;
+              }
+            }
+            if (flag == 1) {
+              this.$router.push({ name: "Admin" });
+            } else {
+              this.$router.push({ name: "Home" });
+            }
+          });
+        } else {
+          alert("error submit!!");
           return false;
         }
       });

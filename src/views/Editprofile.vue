@@ -17,7 +17,7 @@
       <el-row :gutter="0">
         <el-col :span="22">
           <el-form-item label="Username">
-            <el-input v-model="ruleForm.userName"></el-input>
+            <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -147,7 +147,7 @@ export default {
     return {
       imageUrl: "",
       ruleForm: {
-        userName: "",
+        username: "",
         password: "",
         comfirmpassword: "",
 
@@ -196,31 +196,33 @@ export default {
   },
 
   methods: {
-    // submitForm(formName) {
-    //   this.$refs[formName].validate((valid) => {
-    //     const info = {
-    //     };
-    //     Object.assign(info, this.ruleForm);
-    //     // info.location = JSON.stringify(this.ruleForm.location);
-    //     if(this.ruleForm.password==""){
-    //       delete info.password;
-    //     }
-    //     if(this.ruleForm.userName==""){
-    //       delete info.userName;
-    //     }
-    //     console.log(info);
-    //     if (valid) {
-    //
-    //       UserDataService.patchuser(info).then((response) =>
-    //         console.log(response)
-    //       );
-    //       this.$router.push({name: 'Profile'});
-    //     } else {
-    //       console.log("error submit!!");
-    //       return false;
-    //     }
-    //   });
-    // },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        const info = {};
+        Object.assign(info, this.ruleForm);
+        // info.location = JSON.stringify(this.ruleForm.location);
+        if (this.ruleForm.password == "") {
+          delete info.password;
+        }
+        if (this.ruleForm.username == "") {
+          delete info.username;
+        }
+        console.log(info);
+        if (valid) {
+          UserDataService.patchuser(this.$store.getters.userid, info).then(
+            (response) => {
+              console.log(response.data);
+              console.log(this.$store.getters.userid);
+            }
+          );
+          this.$router.push({ name: "Profile" });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+
     submitForm2(formName) {
       this.$refs[formName].validate((valid) => {
         const info = {};
@@ -228,8 +230,8 @@ export default {
         info.location = JSON.stringify(this.ruleForm2.location);
         console.log(info);
         if (valid) {
-          UserDataService.patchuser(info).then((response) =>
-            console.log(response)
+          UserDataService.patchuser(this.$store.getters.userid, info).then(
+            (response) => console.log(response)
           );
           this.$router.push({ name: "Profile" });
         } else {
@@ -240,16 +242,19 @@ export default {
     },
 
     refreshUser() {
-      UserDataService.retrieveAllUser().then((response) => {
-        console.log(response.data);
-        this.ruleForm2.displayName = response.data.displayName;
-        this.ruleForm.email = response.data.email;
-        this.ruleForm.phone = response.data.phone;
-        this.ruleForm2.language = response.data.language;
-        this.ruleForm2.gender = response.data.gender;
-        this.ruleForm2.description = response.data.description;
-        this.ruleForm2.location = JSON.parse(response.data.location);
-      });
+      UserDataService.retrieveAllUser(this.$store.getters.userid).then(
+        (response) => {
+          console.log("id" + this.$store.getters.userid);
+          console.log(response.data);
+          this.ruleForm2.displayName = response.data.displayName;
+          this.ruleForm.email = response.data.email;
+          this.ruleForm.phone = response.data.phone;
+          this.ruleForm2.language = response.data.language;
+          this.ruleForm2.gender = response.data.gender;
+          this.ruleForm2.description = response.data.description;
+          this.ruleForm2.location = JSON.parse(response.data.location);
+        }
+      );
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);

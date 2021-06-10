@@ -94,4 +94,22 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  if (to.path === "/login" || to.path === "/login") {
+    //若要跳转的页面是登录界面
+    next(); //直接跳转
+  } else {
+    //若要跳转的页面是个人界面//获取本地存储的token值
+    const token = localStorage.getItem("token");
+    if (token === null || token === "") {
+      //若token为空则验证不成功，跳转到登录页面
+      alert("Please login first");
+      next("/login");
+    } else {
+      //不为空则验证成功
+      next();
+    }
+  }
+});
+
 export default router;

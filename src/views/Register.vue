@@ -10,7 +10,7 @@
       <h1>Sign up.</h1>
       <h4 style="margin-bottom: 20px">Register with your personal data</h4>
       <el-form-item label="Username">
-        <el-input v-model="ruleForm.userName"></el-input>
+        <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
 
       <el-form-item label="Gender" style="text-align: left">
@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        userName: "",
+        username: "",
         password: "",
         comfirmpassword: "",
         gender: "",

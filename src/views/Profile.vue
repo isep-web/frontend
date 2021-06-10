@@ -28,7 +28,7 @@
               class="btn btn-default"
               style="margin-top: 50px"
             >
-              <a href="/editprofile">Edit my profile</a>
+              <router-link to="/editprofile"> Edit my profile </router-link>
             </button>
           </div>
         </div>
@@ -108,8 +108,9 @@ export default {
 
   methods: {
     refreshuser() {
-      UserDataService.retrieveAllUser() //HARDCODED
+      UserDataService.retrieveAllUser(this.$store.getters.userid) //HARDCODED
         .then((response) => {
+          console.log(this.$store.getters.userid);
           this.users = response.data;
           console.log(response.data);
         });
@@ -123,8 +124,8 @@ export default {
           this.numberOfHouses = 0;
 
           for (let i = 0; i < this.houses.length; i++) {
-            // console.log(this.houses[i]);
-            if (this.houses[i].userId === this.id) {
+            console.log(this.houses[i]);
+            if (this.houses[i].userId == this.$store.getters.userid) {
               this.numberOfHouses++;
 
               this.houses[i].houseId = this.getHouseId(
@@ -144,7 +145,6 @@ export default {
   },
 
   created() {
-    this.id = 2;
     this.refreshhouse();
     this.refreshuser();
   },

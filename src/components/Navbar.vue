@@ -15,7 +15,7 @@
         style="margin-left: 150px"
         @click="clickItem('search')"
       >
-        <router-link to="/search"> My publishing </router-link>
+        <router-link to="/search"> Search </router-link>
       </el-menu-item>
       <el-menu-item index="3" @click="clickItem('application')">
         <router-link to="/application"> My publishing </router-link>
@@ -45,20 +45,18 @@
           </el-avatar>
           My account
         </template>
-
-        <el-menu-item
-          index="8-1"
-          v-if="verifyLogin()"
-          @click="clickItem('profile')"
-        >
+        s
+        <el-menu-item index="8-1" @click="clickItem('profile')">
           My profile
         </el-menu-item>
-        <el-menu-item index="8-2" v-if="verifyLogin()">Log out</el-menu-item>
+        <el-menu-item index="8-2" @click="Logout()">Log out</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   name: "Navbar",
   data() {
@@ -70,13 +68,13 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["delToken"]),
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    verifyLogin() {
-      let check = sessionStorage.getItem("token");
-      console.log(check);
-      return 1;
+    Logout() {
+      this.$router.push("/login");
+      this.$store.commit("delToken");
     },
     clickItem(link) {
       this.$router.push("/" + link);
@@ -84,9 +82,6 @@ export default {
   },
   created() {
     this.userId = 1;
-    if (this.verifyLogin()) {
-      return;
-    }
   },
 };
 </script>
