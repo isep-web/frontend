@@ -130,23 +130,25 @@ export default {
       let json = JSON.parse('{"accepted": ' + status + "}");
       this.$confirm("Do you want to " + msg + " this application?", "Warning", {
         confirmButtonText: "Yes",
-        cancelButtonText: "No really",
+        cancelButtonText: "No",
         type: "warning",
       })
         .then(() => {
-          HomeDataService.patchApp(appId, json).then((response) => {
-            if (response.status === 200) {
-              ElMessage.success({
-                dangerouslyUseHTMLString: true,
-                message: msg + " application successfully",
-                type: "success",
-                center: true,
-              });
-            } else {
+          HomeDataService.patchApp(appId, json)
+            .then((response) => {
+              if (response.status === 200) {
+                ElMessage.success({
+                  dangerouslyUseHTMLString: true,
+                  message: msg + " application successfully",
+                  type: "success",
+                  center: true,
+                });
+              }
+              this.refreshApps();
+            })
+            .catch(() => {
               ElMessage.error("filed to " + msg);
-            }
-            this.refreshApps();
-          });
+            });
         })
         .catch(() => {
           this.$message({
