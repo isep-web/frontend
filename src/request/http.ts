@@ -3,6 +3,7 @@ import axios from "axios";
 import { ElMessage } from "element-plus";
 import store from "@/store/index.ts";
 import router from "@/router";
+// import { ConsoleMessage } from "inspector";
 
 axios.defaults.baseURL = "http://localhost:17698";
 axios.defaults.timeout = 10000;
@@ -16,7 +17,7 @@ instance.interceptors.request.use(
     token && (config.headers.Authorization = "Bearer " + token);
     return config;
   },
-  (error) => Promise.error(error)
+  (error) => Promise.reject(error)
 );
 // 响应拦截器
 instance.interceptors.response.use(
@@ -35,10 +36,9 @@ instance.interceptors.response.use(
   }
 );
 /**
- * 提示函数
- * 禁止点击蒙层、显示一秒后关闭
+ * Error message
  */
-const elMsg = (msg) => {
+const elMsg = (msg: string) => {
   ElMessage({
     message: msg,
     duration: 1000,
@@ -48,10 +48,11 @@ const elMsg = (msg) => {
 };
 
 /**
- * 请求失败后的错误统一处理
- * @param {Number} status 请求失败的状态码
+ * Handle response error
+ * @param {Number} status status code
+ * @param other console message
  */
-const errorHandle = (status, other) => {
+const errorHandle = (status: number, other: string) => {
   // 状态码判断
   switch (status) {
     // 401: 未登录状态，跳转登录页
@@ -82,7 +83,7 @@ const toLogin = () => {
   router.replace({
     path: "/login",
     query: {
-      redirect: router.currentRoute.fullPath,
+      redirect: router.currentRoute.value.fullPath,
     },
   });
 };
