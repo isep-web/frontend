@@ -1,11 +1,9 @@
 import axios from "axios";
-// import qs from "qs";
 import { ElMessage } from "element-plus";
 import store from "@/store/index.ts";
 import router from "@/router";
-// import { ConsoleMessage } from "inspector";
 
-axios.defaults.baseURL = "http://localhost:17698";
+axios.defaults.baseURL = "http://localhost:8888";
 axios.defaults.timeout = 10000;
 
 const instance = axios.create({ timeout: 1000 * 12 });
@@ -13,15 +11,14 @@ const instance = axios.create({ timeout: 1000 * 12 });
 instance.interceptors.request.use(
   (config) => {
     const token = store.state.token;
-    // console.log("1: " + token);
     token && (config.headers.Authorization = "Bearer " + token);
     return config;
   },
   (error) => Promise.reject(error)
 );
-// 响应拦截器
+
 instance.interceptors.response.use(
-  // 请求成功
+  // 20x status
   (res) =>
     res.status === 200 ||
     res.status === 201 ||
@@ -30,11 +27,11 @@ instance.interceptors.response.use(
     res.status === 204
       ? Promise.resolve(res)
       : Promise.reject(res),
-  // 请求失败
+  // rejected
   (error) => {
     const { response } = error;
     if (response) {
-      // 请求已发出，但是不在2xx的范围
+      // other status
       errorHandle(response.status, response.data.message);
       return Promise.reject(response);
     } else {
@@ -60,14 +57,12 @@ const elMsg = (msg: string) => {
  * @param other console message
  */
 const errorHandle = (status: number, other: string) => {
-  // 状态码判断
   switch (status) {
-    // 401: 未登录状态，跳转登录页
+    // 401
     case 401:
       toLogin();
       break;
-    // 403 token过期
-    // 清除token并跳转登录页
+    // auth error
     case 5002:
     case 5003:
       elMsg("Token is invalid, please login again");
@@ -77,7 +72,7 @@ const errorHandle = (status: number, other: string) => {
         toLogin();
       }, 2000);
       break;
-    // 404请求不存在
+    // 404
     case 404:
       // elMsg("Requested resource does not exist");
       break;
