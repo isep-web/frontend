@@ -7,11 +7,22 @@ class ApplyHouseService {
   postMessage(msgForm) {
     return axios.post("/messages", msgForm);
   }
-  getMessage(msgForm) {
-    return 0;
-  }
   getUser(userId) {
-    return axios.get("http://localhost:17698/users/" + userId);
+    return axios.get("/users/" + userId);
+  }
+  getMessageByTargetId(targetUserId) {
+    console.log("/messages/search/findByTargetUserId?userId=" + targetUserId);
+    return axios.get(
+      "/messages/search/findByTargetUserId?userId=" + targetUserId
+    );
+  }
+  getMessageBySourceId(sourceUserId) {
+    return axios.get(
+      "/messages/search/findBySourceUserId?userId=" + sourceUserId
+    );
+  }
+  patchMessageReadStatus(msgId) {
+    return axios.patch("/messages/" + msgId, JSON.parse('{"read":1}'));
   }
 }
 
