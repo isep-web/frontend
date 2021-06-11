@@ -325,14 +325,14 @@ export default {
       ) {
         console.log("ApplyData: " + JSON.stringify(this.form));
         ApplyHouseService.postApplication(this.form).then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           console.log("submit!");
-          ElMessage.success({
-            dangerouslyUseHTMLString: true,
-            message: 'Apply successfully!<strong style="color:green" />',
-            type: "success",
-            center: true,
-          });
+        });
+        ElMessage.success({
+          dangerouslyUseHTMLString: true,
+          message: 'Apply successfully!<strong style="color:green" />',
+          type: "success",
+          center: true,
         });
       } else {
         if (this.form.sourceUser.id === this.form.targetUser.id) {
@@ -356,18 +356,25 @@ export default {
         cancelButtonText: "Cancel",
       })
         .then(({ value }) => {
-          this.$message({
-            type: "success",
-            message: "Massage sent successfully!",
-          });
           console.log(value);
           this.msgForm.content = value;
-          // //测试用 sourceUserId
-          // this.msgForm.sourceUserId = 2;
-          // console.log(this.msgForm);
-          // ApplyHouseService.postMessage(this.msgForm).then((response) => {
-          //   console.log(response.data);
-          // });
+          this.msgForm.sourceUserId = this.$store.getters.userid;
+          this.msgForm.targetUserId = this.houseData.userId;
+          console.log(this.msgForm);
+          ApplyHouseService.postMessage(this.msgForm).then((response) => {
+            console.log(response.data);
+            if (response.status === 201) {
+              this.$message({
+                type: "success",
+                message: "Massage sent successfully!",
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "Failed to send message!",
+              });
+            }
+          });
         })
         .catch(() => {
           this.$message({
