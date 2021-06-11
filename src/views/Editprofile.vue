@@ -226,16 +226,17 @@ export default {
           });
 
           //修改password
-          let json = '\'{"password":"' + this.ruleForm.password + "\"}'";
-          console.log(json);
-          let password = JSON.parse(json);
-          console.log(password);
-          console.log(JSON.parse('{"password":"admin123"}'));
-          UserDataService.patchpassword(password).then((response) => {
-            console.log(response.data);
-            alert("success");
-          });
-          // this.$router.push({ name: "Profile" });
+          const pass = {};
+          pass.password = this.ruleForm.password;
+
+          UserDataService.patchpassword(pass)
+            .then((response) => {
+              console.log(response.data);
+              alert("success");
+            })
+            .then(() => {
+              this.$router.push({ name: "Login" });
+            });
         } else {
           console.log("error submit!!");
           return false;
