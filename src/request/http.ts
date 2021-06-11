@@ -23,7 +23,11 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   // 请求成功
   (res) =>
-    res.status === (200 | 201 | 202 | 203 | 204)
+    res.status === 200 ||
+    res.status === 201 ||
+    res.status === 202 ||
+    res.status === 203 ||
+    res.status === 204
       ? Promise.resolve(res)
       : Promise.reject(res),
   // 请求失败

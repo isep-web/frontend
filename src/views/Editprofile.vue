@@ -56,8 +56,8 @@
           type="primary"
           @click="submitForm('ruleForm')"
           style="margin-left: 250px"
-          >Submit</el-button
-        >
+          >Submit
+        </el-button>
       </el-form-item>
     </el-card>
   </el-form>
@@ -143,8 +143,8 @@
           type="primary"
           @click="submitForm2('ruleForm2')"
           style="margin-left: 250px"
-          >Submit</el-button
-        >
+          >Submit
+        </el-button>
       </el-form-item>
     </el-card>
   </el-form>
@@ -226,8 +226,11 @@ export default {
           });
 
           //修改password
-          let password = JSON.parse(this.ruleForm.password);
+          let json = '\'{"password":"' + this.ruleForm.password + "\"}'";
+          console.log(json);
+          let password = JSON.parse(json);
           console.log(password);
+          console.log(JSON.parse('{"password":"admin123"}'));
           UserDataService.patchpassword(password).then((response) => {
             console.log(response.data);
             alert("success");
@@ -348,6 +351,7 @@ export default {
   text-align: left;
   padding-top: 20px;
 }
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -355,9 +359,11 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -366,6 +372,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+
 .avatar {
   width: 178px;
   height: 178px;
