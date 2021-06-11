@@ -226,17 +226,19 @@ export default {
           });
 
           //修改password
-          const pass = {};
-          pass.password = this.ruleForm.password;
+          if (this.ruleForm.password != "") {
+            const pass = {};
+            pass.password = this.ruleForm.password;
 
-          UserDataService.patchpassword(pass)
-            .then((response) => {
-              console.log(response.data);
-              alert("success");
-            })
-            .then(() => {
-              this.$router.push({ name: "Login" });
-            });
+            UserDataService.patchpassword(pass)
+              .then((response) => {
+                console.log(response.data);
+                alert("success");
+              })
+              .then(() => {
+                this.$router.push({ name: "Login" });
+              });
+          }
         } else {
           console.log("error submit!!");
           return false;
