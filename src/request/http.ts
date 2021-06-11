@@ -79,7 +79,7 @@ const errorHandle = (status: number, other: string) => {
       break;
     // 404请求不存在
     case 404:
-      elMsg("Requested resource does not exist");
+      // elMsg("Requested resource does not exist");
       break;
     default:
       console.log(other);
