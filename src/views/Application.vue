@@ -40,7 +40,7 @@
         <template v-else-if="1">
           <el-card :body-style="{ padding: '0px' }">
             <div style="height: 150px">
-              <img :src="app.photo" style="width: 100%" />
+              <img :src="app.photo" style="height: 100%" />
             </div>
 
             <div style="line-height: 8px">

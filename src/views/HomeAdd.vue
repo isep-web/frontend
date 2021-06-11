@@ -52,7 +52,7 @@
                   alt="checked"
                   id="a1img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a1')"
                 />
               </el-col>
@@ -68,7 +68,7 @@
                   alt="checked"
                   id="a2img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a2')"
                 />
               </el-col>
@@ -84,7 +84,7 @@
                   alt="checked"
                   id="a3img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a3')"
                 />
               </el-col>
@@ -100,7 +100,7 @@
                   alt="checked"
                   id="a4img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a4')"
                 />
               </el-col>
@@ -116,7 +116,7 @@
                   alt="checked"
                   id="a5img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a5')"
                 />
               </el-col>
@@ -132,7 +132,7 @@
                   alt="checked"
                   id="a6img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a6')"
                 />
               </el-col>
@@ -148,7 +148,7 @@
                   alt="checked"
                   id="a7img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a7')"
                 />
               </el-col>
@@ -164,7 +164,7 @@
                   alt="checked"
                   id="a8img"
                   class="gray"
-                  style="width: 80%"
+                  style="width: 80%; margin-bottom: 10px"
                   @click="img_click('a8')"
                 />
               </el-col>
@@ -297,7 +297,7 @@
               class="housePic"
               v-for="picId in this.ruleForm.fileHad"
               :key="picId"
-              :src="'http://localhost:17698/pictures/' + picId"
+              :src="'http://localhost:8888/pictures/' + picId + '/content'"
               @click="handleRemove(0, picId)"
             />
             <img

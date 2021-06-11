@@ -9,7 +9,7 @@
     >
       <h1>Sign up.</h1>
       <h4 style="margin-bottom: 20px">Register with your personal data</h4>
-      <el-form-item label="Username">
+      <el-form-item label="Username" prop="notnull">
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
 
@@ -17,13 +17,13 @@
       <!--        <el-radio v-model="ruleForm.gender" label="1">Female</el-radio>-->
       <!--        <el-radio v-model="ruleForm.gender" label="2">Male</el-radio>-->
       <!--      </el-form-item>-->
-      <el-form-item label="Email">
+      <el-form-item label="Email" prop="notnull">
         <el-input
           placeholder="input your email"
           v-model="ruleForm.email"
         ></el-input>
       </el-form-item>
-      <el-form-item label="phone">
+      <el-form-item label="Phone" prop="notnull">
         <el-input
           placeholder="input your phone"
           v-model="ruleForm.phone"
@@ -36,7 +36,7 @@
           show-password
         ></el-input>
       </el-form-item>
-      <el-form-item label="comfirm Password" prop="comfirmpassword">
+      <el-form-item label="Confirm" prop="comfirmpassword">
         <el-input
           placeholder="input your password"
           v-model="ruleForm.comfirmpassword"
@@ -81,6 +81,13 @@ export default {
         phone: "",
       },
       rules: {
+        notnull: [
+          {
+            required: true,
+            message: "can not be empty",
+            trigger: "blur",
+          },
+        ],
         password: [
           {
             pattern:
@@ -92,21 +99,21 @@ export default {
           },
           {
             max: 30,
-            message: "名称长度不能超过30位",
+            message: "max length of password is 30",
           },
         ],
         comfirmpassword: [
           {
             required: true,
-            message: "确认密码",
+            message: "confirm your password",
             trigger: "blur",
           },
           {
             validator: (rule, value, callback) => {
               if (value === "") {
-                callback(new Error("请再次输入密码"));
+                callback(new Error("please type your pasword again"));
               } else if (value !== this.ruleForm.password) {
-                callback(new Error("两次输入密码不一致"));
+                callback(new Error("Passwords do not match"));
               } else {
                 callback();
               }

@@ -53,7 +53,7 @@
           class="col-md-12 column"
           style="text-align: left; margin-top: 50px"
         >
-          <h4>Home</h4>
+          <h4>Published Houses</h4>
         </div>
         <div
           class="col-md-4 column"

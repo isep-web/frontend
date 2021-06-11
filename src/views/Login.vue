@@ -54,7 +54,7 @@
       Don't have an account?
       <router-link to="/register">Sign up!</router-link>
       <br /><br />
-      <a href="#">Forget password?</a>
+      <!--      <a href="#">Forget password?</a>-->
     </div>
   </el-card>
 </template>

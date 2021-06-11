@@ -29,49 +29,49 @@
                 v-if="amenity === 'TV'"
                 src="../assets/amenities/TV.png"
                 alt="TV"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'WiFi'"
                 src="../assets/amenities/wifi.png"
                 alt="WiFi"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'A/C'"
                 src="../assets/amenities/AC.png"
                 alt="A/C"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'Cook'"
                 src="../assets/amenities/cook.png"
                 alt="Cook"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'Bathtub'"
                 src="../assets/amenities/bathtub.png"
                 alt="Bathtub"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'Heating system'"
                 src="../assets/amenities/heating.png"
                 alt="Heating"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'Swimming pool'"
                 src="../assets/amenities/swimming.png"
                 alt="Swimming"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="amenity === 'Elevator'"
                 src="../assets/amenities/elevator.png"
                 alt="Elevator"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
             </span>
           </div>
@@ -87,19 +87,19 @@
                 v-if="service === 'Cleaning'"
                 src="../assets/amenities/cleaning.png"
                 alt="Cleaning"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="service === 'Feed pet'"
                 src="../assets/amenities/petsToFeed.png"
                 alt="PetsToFeed"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="service === 'Water plant'"
                 src="../assets/amenities/plant.png"
                 alt="PlantsToWater"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
             </span>
           </div>
@@ -115,19 +115,19 @@
                 v-if="constraint === 'Smoke'"
                 src="../assets/amenities/smoke.png"
                 alt="SmokersWelcome"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="constraint === 'Children'"
                 src="../assets/amenities/children.png"
                 alt="ChildrenWelcome"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
               <img
                 v-if="constraint === 'Pet'"
                 src="../assets/amenities/pet.png"
                 alt="PetsWelcome"
-                style="width: 20%"
+                style="width: 20%; margin-right: 10px"
               />
             </span>
           </div>

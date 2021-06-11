@@ -194,13 +194,13 @@ export default {
         comfirmpassword: [
           {
             // required:true,
-            message: "确认密码",
+            message: "confirm your password",
             trigger: "blur",
           },
           {
             validator: (rule, value, callback) => {
               if (value !== this.ruleForm.password) {
-                callback(new Error("两次输入密码不一致"));
+                callback(new Error("should be same with password"));
               } else {
                 callback();
               }
@@ -320,7 +320,7 @@ export default {
           } else if (response.data.sex === 2) {
             this.ruleForm2.sex = "female";
           } else {
-            this.ruleForm2.sex = response.data.sex;
+            this.ruleForm2.sex = null;
           }
           this.ruleForm2.description = response.data.description;
           this.ruleForm2.location = JSON.parse(response.data.location);
