@@ -95,7 +95,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.path === "/login" || to.path === "/login") {
+  if (to.path === "/login" || to.path === "/register") {
     //若要跳转的页面是登录界面
     next(); //直接跳转
   } else {

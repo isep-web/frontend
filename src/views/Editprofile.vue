@@ -14,13 +14,13 @@
         exchange. The other information will not be disclosed and will remain
         private.
       </p>
-      <el-row :gutter="0">
-        <el-col :span="22">
-          <el-form-item label="Username">
-            <el-input v-model="ruleForm.username"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!--      <el-row :gutter="0">-->
+      <!--        <el-col :span="22">-->
+      <!--          <el-form-item label="Username">-->
+      <!--            <el-input v-model="ruleForm.username"></el-input>-->
+      <!--          </el-form-item>-->
+      <!--        </el-col>-->
+      <!--      </el-row>-->
 
       <el-row :gutter="5">
         <el-col :span="11">
@@ -86,7 +86,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="Gender">
-            <el-input v-model="ruleForm2.gender"></el-input>
+            <el-input v-model="ruleForm2.sex"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -174,22 +174,22 @@ export default {
         location: "",
         language: "",
         description: "",
-        gender: "",
+        sex: "",
       },
       rules: {
-        password: [
-          {
-            pattern:
-              /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
-            // required: true,
-            message: "名称必填",
-            trigger: "blur",
-          },
-          {
-            max: 30,
-            message: "名称长度不能超过30位",
-          },
-        ],
+        // password: [
+        //   {
+        //     pattern:
+        //       /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
+        //     // required: true,
+        //     message: "名称必填",
+        //     trigger: "blur",
+        //   },
+        //   {
+        //     max: 30,
+        //     message: "名称长度不能超过30位",
+        //   },
+        // ],
         comfirmpassword: [
           {
             // required:true,
@@ -215,21 +215,24 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         const info = {};
-        Object.assign(info, this.ruleForm);
-        // info.location = JSON.stringify(this.ruleForm.location);
-        if (this.ruleForm.password == "") {
-          delete info.password;
-        }
-        if (this.ruleForm.username == "") {
-          delete info.username;
-        }
+        info.phone = this.ruleForm.phone;
+        info.email = this.ruleForm.email;
         console.log(info);
         if (valid) {
+          //修改phone&email
           UserDataService.patchuser(this.userId, info).then((response) => {
             console.log(response.data);
             console.log(this.userId);
           });
-          this.$router.push({ name: "Profile" });
+
+          //修改password
+          let password = JSON.parse(this.ruleForm.password);
+          console.log(password);
+          UserDataService.patchpassword(password).then((response) => {
+            console.log(response.data);
+            alert("success");
+          });
+          // this.$router.push({ name: "Profile" });
         } else {
           console.log("error submit!!");
           return false;
@@ -241,6 +244,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         const info = {};
         Object.assign(info, this.ruleForm2);
+        if (this.ruleForm2.sex === "female") {
+          info.sex = 2;
+        } else if (this.ruleForm2.sex === "male") {
+          info.sex = 1;
+        }
         info.location = JSON.stringify(this.ruleForm2.location);
         console.log(info);
         if (valid) {
@@ -280,7 +288,13 @@ export default {
           this.ruleForm.email = response.data.email;
           this.ruleForm.phone = response.data.phone;
           this.ruleForm2.language = response.data.language;
-          this.ruleForm2.gender = response.data.gender;
+          if (response.data.sex === 1) {
+            this.ruleForm2.sex = "male";
+          } else if (response.data.sex === 2) {
+            this.ruleForm2.sex = "female";
+          } else {
+            this.ruleForm2.sex = response.data.sex;
+          }
           this.ruleForm2.description = response.data.description;
           this.ruleForm2.location = JSON.parse(response.data.location);
         }
