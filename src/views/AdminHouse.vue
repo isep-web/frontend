@@ -151,10 +151,10 @@ export default {
             type: "success",
             center: true,
           });
+          this.refreshAdminHouse(this.userId);
         } else {
           ElMessage.error("filed to delete");
         }
-        this.refreshAdminHouse(this.userId);
       });
     },
     refreshAdminHouse(userId) {

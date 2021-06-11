@@ -100,6 +100,7 @@ export default {
                 type: "success",
                 message: "Massage sent successfully!",
               });
+              this.refreshApplyService(this.userId);
             } else {
               this.$message({
                 type: "warning",
