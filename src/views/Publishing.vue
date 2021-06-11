@@ -71,6 +71,7 @@ export default {
   methods: {
     refreshHouses() {
       HomeDataService.retrieveAllHome(-1).then((response) => {
+        console.log(response.data);
         this.houses = response.data._embedded.houses;
         // console.log(this.houses);
         // this.numberOfHouses = houses.length;
@@ -102,6 +103,8 @@ export default {
     },
     deleteHouse(houseId, index) {
       HomeDataService.deleteHouse(houseId).then((response) => {
+        console.log("111");
+        console.log(response);
         if (response.status === 204) {
           ElMessage.success({
             dangerouslyUseHTMLString: true,

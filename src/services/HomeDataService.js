@@ -49,6 +49,9 @@ class HomeDataService {
   putServices(houseId, data) {
     return axios.put("/houses/" + houseId + "/services", data);
   }
+  patchRules(houseId, data) {
+    return axios.patch("/houses/" + houseId, data);
+  }
 
   putHouse(houseId, form) {
     return axios.put("/houses/" + houseId, form);
@@ -90,6 +93,8 @@ class HomeDataService {
   }
 
   patchApp(appId, data) {
+    console.log(appId);
+    console.log(data);
     return axios.patch("/applications/" + appId, data);
   }
 

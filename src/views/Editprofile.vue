@@ -154,6 +154,7 @@
 import UserDataService from "../services/UserDataService";
 import { mapGetters } from "vuex";
 import HomeDataService from "../services/HomeDataService";
+import { ElMessage } from "element-plus";
 
 export default {
   data() {
@@ -223,22 +224,33 @@ export default {
           UserDataService.patchuser(this.userId, info).then((response) => {
             console.log(response.data);
             console.log(this.userId);
-          });
+            //修改password
+            if (this.ruleForm.password != "") {
+              const pass = {};
+              pass.password = this.ruleForm.password;
 
-          //修改password
-          if (this.ruleForm.password != "") {
-            const pass = {};
-            pass.password = this.ruleForm.password;
-
-            UserDataService.patchpassword(pass)
-              .then((response) => {
-                console.log(response.data);
-                alert("success");
-              })
-              .then(() => {
-                this.$router.push({ name: "Login" });
+              UserDataService.patchpassword(pass)
+                .then((response) => {
+                  console.log(response.data);
+                  ElMessage.success({
+                    dangerouslyUseHTMLString: true,
+                    message: "password changed, please login again",
+                    type: "success",
+                    center: true,
+                  });
+                })
+                .then(() => {
+                  this.$router.push({ name: "Login" });
+                });
+            } else {
+              ElMessage.success({
+                dangerouslyUseHTMLString: true,
+                message: "modify successfully",
+                type: "success",
+                center: true,
               });
-          }
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
@@ -274,9 +286,18 @@ export default {
             fileData.type = 0;
             HomeDataService.putHousePhotos(fileData).then((response) => {
               const picId = response.data._links.self.href.split("/").pop();
-              HomeDataService.putPictureContent(picId, this.avatarFile);
+              HomeDataService.putPictureContent(picId, this.avatarFile).catch(
+                () => {
+                  this.timer = setTimeout(() => {
+                    //设置延迟执行
+                    console.log("ok");
+                  }, 100);
+                  location.reload();
+                }
+              );
             });
           }
+
           this.$router.push({ name: "Profile" });
         } else {
           console.log("error submit!!");

@@ -114,7 +114,7 @@ export default {
     cancelApp(appId) {
       this.$confirm("Do you want to cancel this application?", "Warning", {
         confirmButtonText: "Yes",
-        cancelButtonText: "No really",
+        cancelButtonText: "No",
         type: "warning",
       })
         .then(() => {

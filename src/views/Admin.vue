@@ -146,6 +146,7 @@ export default {
             type: "success",
             center: true,
           });
+          this.refreshAdmin();
         } else {
           ElMessage.error("filed to delete");
         }

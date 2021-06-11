@@ -469,18 +469,41 @@ export default {
             HomeDataService.postHome(info).then((response) => {
               this.houseId = response.data._links.self.href.split("/").pop();
               //上传house之后拿到houseId 再put amenities的数据
-              HomeDataService.putAmenities(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.amenities)
-              );
-              HomeDataService.putConstraints(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.constraints)
-              );
-              HomeDataService.putServices(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.services)
-              );
+              // HomeDataService.putAmenities(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.amenities)
+              // ).then((response) => {
+              //   console.log("amenities");
+              //   console.log(response.data);
+              // });
+              // HomeDataService.putConstraints(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.constraints)
+              // );
+              // HomeDataService.putServices(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.services)
+              // );
+              let rulesData = {};
+              let amenitiesId = [];
+              let constraintsId = [];
+              let servicesId = [];
+              for (let i = 0; i < this.ruleForm.amenities.length; i++) {
+                amenitiesId.push({ id: this.ruleForm.amenities[i].slice(1) });
+              }
+              for (let i = 0; i < this.ruleForm.constraints.length; i++) {
+                constraintsId.push({
+                  id: this.ruleForm.constraints[i].slice(1),
+                });
+              }
+              for (let i = 0; i < this.ruleForm.services.length; i++) {
+                servicesId.push({ id: this.ruleForm.services[i].slice(1) });
+              }
+              rulesData.userId = this.$store.getters.userid;
+              rulesData.amenities = amenitiesId;
+              rulesData.constraints = constraintsId;
+              rulesData.services = servicesId;
+              HomeDataService.patchRules(this.houseId, rulesData);
 
               // 上传图片
               const fileData = {};
@@ -510,18 +533,39 @@ export default {
           } else {
             //else表示修改house
             HomeDataService.putHouse(this.houseId, info).then((response) => {
-              HomeDataService.putAmenities(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.amenities)
-              );
-              HomeDataService.putConstraints(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.constraints)
-              );
-              HomeDataService.putServices(
-                this.houseId,
-                this.rulesArrayToJson(this.ruleForm.services)
-              );
+              // HomeDataService.putAmenities(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.amenities)
+              // );
+              // HomeDataService.putConstraints(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.constraints)
+              // );
+              // HomeDataService.putServices(
+              //   this.houseId,
+              //   this.rulesArrayToJson(this.ruleForm.services)
+              // );
+              let rulesData = {};
+              let amenitiesId = [];
+              let constraintsId = [];
+              let servicesId = [];
+              for (let i = 0; i < this.ruleForm.amenities.length; i++) {
+                amenitiesId.push({ id: this.ruleForm.amenities[i].slice(1) });
+              }
+              for (let i = 0; i < this.ruleForm.constraints.length; i++) {
+                constraintsId.push({
+                  id: this.ruleForm.constraints[i].slice(1),
+                });
+              }
+              for (let i = 0; i < this.ruleForm.services.length; i++) {
+                servicesId.push({ id: this.ruleForm.services[i].slice(1) });
+              }
+              rulesData.userId = this.$store.getters.userid;
+              rulesData.amenities = amenitiesId;
+              rulesData.constraints = constraintsId;
+              rulesData.services = servicesId;
+              HomeDataService.patchRules(this.houseId, rulesData);
+
               for (let i = 0; i < this.deletedPic.length; i++) {
                 HomeDataService.deletePic(this.deletedPic[i]);
               }
@@ -547,9 +591,10 @@ export default {
 
             this.timer = setTimeout(() => {
               //设置延迟执行
-              console.log("ok");
-            }, 3000);
+              console.log("wait 500ms");
+            }, 500);
             // alert("修改成功");
+
             this.$router.push({
               name: "Publishing",
               params: { houseName: this.ruleForm.title },
@@ -620,24 +665,16 @@ export default {
     },
 
     rulesArrayToJson(array) {
-      let form = "{\n" + '  "_links": {';
-
+      let rulesData = "[";
       for (let i = 0; i < array.length; i++) {
         if (i !== 0) {
-          form = form + ",";
+          rulesData = rulesData + ",";
         }
-        form =
-          form +
-          '"' +
-          array[i] +
-          '": { "href": "http://localhost:17698/houses/' +
-          this.houseId +
-          "/amenities/" +
-          array[i].slice(1) +
-          '" }\n';
+        rulesData = rulesData + '{"id":' + array[i].slice(1) + "}";
       }
-      form = form + "}}";
-      return JSON.parse(form);
+      rulesData = rulesData + "]";
+      console.log(JSON.parse(rulesData));
+      return JSON.parse(rulesData);
     },
   },
   created() {
