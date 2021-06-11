@@ -274,9 +274,18 @@ export default {
             fileData.type = 0;
             HomeDataService.putHousePhotos(fileData).then((response) => {
               const picId = response.data._links.self.href.split("/").pop();
-              HomeDataService.putPictureContent(picId, this.avatarFile);
+              HomeDataService.putPictureContent(picId, this.avatarFile).catch(
+                () => {
+                  this.timer = setTimeout(() => {
+                    //设置延迟执行
+                    console.log("ok");
+                  }, 100);
+                  location.reload();
+                }
+              );
             });
           }
+
           this.$router.push({ name: "Profile" });
         } else {
           console.log("error submit!!");

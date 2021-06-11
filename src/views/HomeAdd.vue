@@ -591,8 +591,8 @@ export default {
 
             this.timer = setTimeout(() => {
               //设置延迟执行
-              console.log("ok");
-            }, 5000);
+              console.log("wait 500ms");
+            }, 500);
             // alert("修改成功");
 
             this.$router.push({
