@@ -108,7 +108,6 @@ export default {
   name: "Profile",
   data() {
     return {
-      id: Number,
       numberOfHouses: 0,
       users: [],
       houses: [],
@@ -123,7 +122,6 @@ export default {
       console.log(store.state);
       UserDataService.retrieveAllUser(this.userId) //HARDCODED
         .then((response) => {
-          // console.log(this.userId);
           this.users = response.data;
           console.log(response.data);
         });
@@ -131,37 +129,36 @@ export default {
         this.avatarURL = response.data._links.content.href;
       });
     },
-    refreshhouse() {
-      HomeDataService.retrieveAllHouse() //HARDCODED
-        .then((response) => {
-          // console.log(response.data);
-          this.houses = response.data._embedded.houses;
-          console.log(this.houses);
-          this.numberOfHouses = 0;
+    refreshhouses() {
+      HomeDataService.retrieveAllHome(-1).then((response) => {
+        console.log(response.data);
+        this.houses = response.data._embedded.houses;
+        // console.log(this.houses);
+        this.numberOfHouses = 0;
 
-          for (let i = 0; i < this.houses.length; i++) {
-            // console.log(this.houses[i]);
-            if (this.houses[i].userId === this.userId) {
-              this.numberOfHouses++;
+        for (let i = 0; i < this.houses.length; i++) {
+          // console.log(this.houses[i]);
+          if (this.houses[i].userId === this.userId) {
+            this.numberOfHouses++;
 
-              this.houses[i].houseId = this.getHouseId(
-                this.houses[i]._links.self.href
-              );
-              HomeDataService.retrievePicByHouseId(this.houses[i].houseId).then(
-                (res) => {
-                  if (res.data._embedded.pictures.length) {
-                    this.houses[i].photo =
-                      res.data._embedded.pictures[0]._links.self.href;
-                  }
+            this.houses[i].houseId = this.getHouseId(
+              this.houses[i]._links.self.href
+            );
+            HomeDataService.retrievePicByHouseId(this.houses[i].houseId).then(
+              (res) => {
+                if (res.data._embedded.pictures.length) {
+                  this.houses[i].photo =
+                    res.data._embedded.pictures[0]._links.self.href;
                 }
-              );
-            } else {
-              this.houses.splice(i, 1);
-              i--;
-            }
-            // console.log(this.houses);
+              }
+            );
+          } else {
+            this.houses.splice(i, 1);
+            i--;
           }
-        });
+          // console.log(this.houses);
+        }
+      });
     },
     getHouseId(url) {
       return parseInt(url.split("/").pop());
@@ -169,8 +166,8 @@ export default {
   },
 
   created() {
-    this.userId = this.$store.getters.userid;
-    this.refreshhouse();
+    this.userId = parseInt(this.$store.getters.userid);
+    this.refreshhouses();
     this.refreshuser();
   },
 };
