@@ -135,7 +135,7 @@ export default {
             if (flag === 1) {
               this.$router.push({ name: "Admin" });
             } else {
-              this.$router.push({ name: "Home" });
+              this.$router.push({ name: "Search" });
             }
           });
         } else {

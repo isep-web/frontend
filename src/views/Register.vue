@@ -81,19 +81,20 @@ export default {
         phone: "",
       },
       rules: {
-        // password: [
-        //   {
-        //     pattern:
-        //       /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
-        //     required: true,
-        //     message: "名称必填",
-        //     trigger: "blur",
-        //   },
-        //   {
-        //     max: 30,
-        //     message: "名称长度不能超过30位",
-        //   },
-        // ],
+        password: [
+          {
+            pattern:
+              /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,
+            required: true,
+            message:
+              "please enter a password with upper and lower letters and at least a number",
+            trigger: "blur",
+          },
+          {
+            max: 30,
+            message: "名称长度不能超过30位",
+          },
+        ],
         comfirmpassword: [
           {
             required: true,
