@@ -7,7 +7,7 @@ class HomeDataService {
     if (houseId > -1) {
       return axios.get("/houses/" + houseId);
     } else {
-      return axios.get("/houses/");
+      return axios.get("/houses");
     }
   }
   retrieveAllAmenities(houseId) {
@@ -38,7 +38,7 @@ class HomeDataService {
   }
 
   postHome(form) {
-    return axios.post("/houses/", form);
+    return axios.post("/houses", form);
   }
   putAmenities(houseId, data) {
     return axios.put("/houses/" + houseId + "/amenities", data);

@@ -28,7 +28,7 @@
         <input
           type="checkbox"
           value="remember-me"
-          v-model="ruleForm.remember"
+          v-model="ruleForm.rememberMe"
         />
         <label>Remember me</label>
       </div>
@@ -72,7 +72,7 @@ export default {
       ruleForm: {
         usernameOrEmailOrPhone: "",
         password: "",
-        remember: true,
+        rememberMe: true,
       },
       // rules: {
       //   password: [
