@@ -32,6 +32,7 @@ npm run lint
 - Element-UI
 - Webpack
 - Babel
+- Front-end and back-end separation
 
 ## Showcase
 
